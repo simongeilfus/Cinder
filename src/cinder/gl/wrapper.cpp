@@ -963,7 +963,6 @@ void frameBufferTexture( const TextureBaseRef &texture, GLenum target, GLenum at
 {
 #if ! defined( CINDER_GL_ES )
 	glFramebufferTexture( target, attachment, texture->getId(), level );
-	
 #else
 	GLenum texTarget = texture->getTarget();
 	if( ! ( texTarget == GL_TEXTURE_2D || 
