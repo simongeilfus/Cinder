@@ -25,7 +25,7 @@ EmptyFboApp::EmptyFboApp()
 	mTextureBlue	= gl::Texture2d::create( getWindowWidth() / 3, getWindowHeight() );
 
 	// create an empty fbo and bind it
-	auto fbo = gl::Fbo::create();
+	auto fbo = gl::Fbo::createEmpty();
 	gl::ScopedFramebuffer scopedFbo( fbo );
 
 	// attach the first texture and clear it with red
@@ -82,7 +82,7 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 	else tex = mTextureGreen;
 	
 	// create an empty fbo and bind it
-	auto fbo = gl::Fbo::create();
+	auto fbo = gl::Fbo::createEmpty();
 	gl::ScopedFramebuffer scopedFbo( fbo );
 	if( event.isLeft() ) {
 		// attach the current texture and clear it with a random color
@@ -147,15 +147,15 @@ void EmptyFboApp::keyDown( KeyEvent event )
 {
 	if( event.getCode() == KeyEvent::KEY_1 ) {
 		// create an empty fbo, attach the 3 textures and clear them with black
-		auto fbo = gl::Fbo::create();
+		auto fbo = gl::Fbo::createEmpty();
 		gl::ScopedFramebuffer scopedFbo( fbo );
 		gl::frameBufferTexture( mTextureRed, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
 		gl::frameBufferTexture( mTextureGreen, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, 0 );
 		gl::frameBufferTexture( mTextureBlue, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, 0 );
 		gl::Fbo::checkStatus();
-	
-		GLenum buffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-		gl::drawBuffers( 3, &buffers[0] );
+		
+		gl::ScopedDrawBuffers drawBuffers( { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 } );
+
 		gl::clear( Color::black() );
 		gl::drawBuffer( GL_COLOR_ATTACHMENT0 );
 	}
@@ -164,7 +164,7 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		// render cubes in the first and then blit it to the second
 		auto colorBuffer = gl::Renderbuffer::create( mTextureRed->getWidth(), mTextureRed->getHeight() );
 		auto depthBuffer = gl::Renderbuffer::create( mTextureRed->getWidth(), mTextureRed->getHeight(), GL_DEPTH_COMPONENT24 );
-		auto fbo0 = gl::Fbo::create();
+		auto fbo0 = gl::Fbo::createEmpty();
 		{
 			gl::ScopedFramebuffer scopedFbo( fbo0 );
 			gl::framebufferRenderbuffer( colorBuffer, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 );
@@ -186,7 +186,7 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		}
 	
 		// create the second fbo and attach its texture
-		auto fbo1 = gl::Fbo::create();
+		auto fbo1 = gl::Fbo::createEmpty();
 		gl::ScopedFramebuffer scopedFbo( fbo1 );
 		gl::frameBufferTexture( mTextureRed, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
 
@@ -199,7 +199,7 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		// render cubes in the first and then blit it to the second
 		auto colorBuffer = gl::Renderbuffer::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), GL_RGBA8, gl::Fbo::getMaxSamples() );
 		auto depthBuffer = gl::Renderbuffer::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), GL_DEPTH_COMPONENT24, gl::Fbo::getMaxSamples() );
-		auto fbo0 = gl::Fbo::create();
+		auto fbo0 = gl::Fbo::createEmpty();
 		{
 			gl::ScopedFramebuffer scopedFbo( fbo0 );
 			gl::framebufferRenderbuffer( colorBuffer, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 );
@@ -221,16 +221,52 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		}
 	
 		// create the second fbo and attach its texture
-		auto fbo1 = gl::Fbo::create();
+		auto fbo1 = gl::Fbo::createEmpty();
 		gl::ScopedFramebuffer scopedFbo( fbo1 );
 		gl::frameBufferTexture( mTextureGreen, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
 
 		// resolve the multisample anti-aliasing by blitting the multisample fbo to the regular one
 		fbo0->blitTo( fbo1, mTextureGreen->getBounds(), mTextureGreen->getBounds() ); 
 	}
+	else if( event.getCode() == KeyEvent::KEY_4 ) {
+		// Multisampling test
+		// create two empty fbo2, attach renderbuffers to the first and the red texture to the other.
+		// render cubes in the first and then blit it to the second
+		auto immutable = true;
+		auto colorBuffer = gl::Texture2d::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), gl::Texture2d::Format().internalFormat( GL_RGBA8 ).samples( gl::Fbo::getMaxSamples() ).immutableStorage( immutable ) );
+		auto depthBuffer = gl::Texture2d::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), gl::Texture2d::Format().internalFormat( GL_DEPTH_COMPONENT24 ).samples( gl::Fbo::getMaxSamples() ).immutableStorage( immutable ) );
+		auto fbo0 = gl::Fbo::createEmpty();
+		{
+			gl::ScopedFramebuffer scopedFbo( fbo0 );
+			gl::frameBufferTexture( colorBuffer, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+			gl::frameBufferTexture( depthBuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0 );
+			if( ! gl::Fbo::checkStatus() ) console() << "INCOMPLETE!!!" << endl;
+		
+			gl::clear();
 
-	// check for erros
+			gl::ScopedDepth scopedDepth( true );
+			gl::ScopedViewport viewport( mTextureGreen->getSize() );
+			gl::setMatrices( CameraPersp( mTextureGreen->getWidth(), mTextureGreen->getHeight(), 50.0f, 0.1f, 100.0f ).calcFraming( Sphere( vec3( 0.0f ), 2.0f ) ) );
+		
+			auto colorCube = gl::Batch::create( geom::Cube().colors(), gl::getStockShader( gl::ShaderDef().color() ) );
+			for( int i = 0; i < 150; ++i ) {
+				gl::ScopedModelMatrix scopedMat;
+				gl::multModelMatrix( glm::scale( vec3( randFloat() ) ) * glm::rotate( randFloat(), randVec3() ) * glm::translate( randVec3() * randFloat( 0.0f, 10.0f ) ) );
+				colorCube->draw();
+			}
+		}
+	
+		// create the second fbo and attach its texture
+		auto fbo1 = gl::Fbo::createEmpty();
+		gl::ScopedFramebuffer scopedFbo( fbo1 );
+		gl::frameBufferTexture( mTextureBlue, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+
+		// resolve the multisample anti-aliasing by blitting the multisample fbo to the regular one
+		fbo0->blitTo( fbo1, mTextureGreen->getBounds(), mTextureGreen->getBounds() ); 
+	}
+
+	// check for errors
 	CI_CHECK_GL();
 }
 
-CINDER_APP( EmptyFboApp, RendererGl )
+CINDER_APP( EmptyFboApp, RendererGl( RendererGl::Options().debug() ) )
