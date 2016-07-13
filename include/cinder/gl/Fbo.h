@@ -175,6 +175,9 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
 	
 	//! Returns a copy of the pixels in \a attachment within \a area (cropped to the bounding rectangle of the attachment) as an 8-bit per channel Surface. \a attachment ignored on ES 2.
 	Surface8u		readPixels8u( const Area &area, GLenum attachment = GL_COLOR_ATTACHMENT0 ) const;
+	
+	//! Returns whether the Fbo is valid and complete
+	bool		checkStatus( class FboExceptionInvalidSpecification *resultExc );
 
 	//! \brief Defines the Format of the Fbo, which is passed in via create().
 	//!
@@ -285,7 +288,6 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
 	void		attachAttachments();
 	void		initMultisample( const Format &format );
 	void		updateMipmaps( GLenum attachment ) const;
-	bool		checkStatus( class FboExceptionInvalidSpecification *resultExc );
 	void		setDrawBuffers( GLuint fbId, const std::map<GLenum,RenderbufferRef> &attachmentsBuffer, const std::map<GLenum,TextureBaseRef> &attachmentsTexture );
 
 	int					mWidth, mHeight;
