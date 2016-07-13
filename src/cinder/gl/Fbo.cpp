@@ -37,6 +37,7 @@
 #include "cinder/gl/Context.h"
 #include "cinder/gl/Environment.h"
 #include "cinder/gl/scoped.h"
+#include "cinder/gl/wrapper.h"
 #include "cinder/Log.h"
 #include "cinder/Camera.h"
 #include "cinder/gl/ConstantConversions.h"
@@ -365,7 +366,7 @@ void Fbo::attachAttachments()
 {
 	// attach Renderbuffers
 	for( auto &bufferAttachment : mAttachmentsBuffer )
-		glFramebufferRenderbuffer( GL_FRAMEBUFFER, bufferAttachment.first, GL_RENDERBUFFER, bufferAttachment.second->getId() );
+		framebufferRenderbuffer( GL_FRAMEBUFFER, bufferAttachment.first, GL_RENDERBUFFER, bufferAttachment.second->getId() );
 	
 	// attach Textures
 	for( auto &textureAttachment : mAttachmentsTexture ) {
@@ -373,15 +374,15 @@ void Fbo::attachAttachments()
 #if ! defined( CINDER_GL_ES )
 		if( textureTarget == GL_TEXTURE_CUBE_MAP ) {
 			textureTarget = GL_TEXTURE_CUBE_MAP_POSITIVE_X;
-			glFramebufferTexture2D( GL_FRAMEBUFFER, textureAttachment.first, textureTarget, textureAttachment.second->getId(), 0 );
+			framebufferTexture2d( GL_FRAMEBUFFER, textureAttachment.first, textureTarget, textureAttachment.second->getId(), 0 );
 		}
 		else {
-			glFramebufferTexture( GL_FRAMEBUFFER, textureAttachment.first, textureAttachment.second->getId(), 0 );
+			framebufferTexture( GL_FRAMEBUFFER, textureAttachment.first, textureAttachment.second->getId(), 0 );
 		}
 #else
 		if( textureTarget == GL_TEXTURE_CUBE_MAP )
 			textureTarget = GL_TEXTURE_CUBE_MAP_POSITIVE_X;
-		glFramebufferTexture2D( GL_FRAMEBUFFER, textureAttachment.first, textureTarget, textureAttachment.second->getId(), 0 );
+		framebufferTexture2d( GL_FRAMEBUFFER, textureAttachment.first, textureTarget, textureAttachment.second->getId(), 0 );
 #endif
 	}	
 }
@@ -469,7 +470,7 @@ void Fbo::initMultisample( const Format &format )
 
 	// attach MultisampleRenderbuffers
 	for( auto &bufferAttachment : mAttachmentsMultisampleBuffer )
-		glFramebufferRenderbuffer( GL_FRAMEBUFFER, bufferAttachment.first, GL_RENDERBUFFER, bufferAttachment.second->getId() );
+		framebufferRenderbuffer( GL_FRAMEBUFFER, bufferAttachment.first, GL_RENDERBUFFER, bufferAttachment.second->getId() );
 
 	FboExceptionInvalidSpecification ignoredException;
 	if( ! checkStatus( &ignoredException ) ) { // failure
@@ -849,7 +850,7 @@ FboCubeMap::FboCubeMap( int32_t faceWidth, int32_t faceHeight, const Format &for
 void FboCubeMap::bindFramebufferFace( GLenum faceTarget, GLint level, GLenum target, GLenum attachment )
 {
 	bindFramebuffer( target );
-	glFramebufferTexture2D( target, attachment, faceTarget, mTextureCubeMap->getId(), level );
+	framebufferTexture2d( target, attachment, faceTarget, mTextureCubeMap->getId(), level );
 }
 
 TextureCubeMapRef FboCubeMap::getTextureCubeMap( GLenum attachment )
