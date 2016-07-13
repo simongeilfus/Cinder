@@ -784,7 +784,7 @@ bool Fbo::checkStatus()
 	bool status = checkStatus( &exc );
 	if( ! status ) // failed creation; throw
 		throw exc;
-	return false;
+	return status;
 }
 
 #if ! defined( CINDER_GL_ES )
