@@ -29,15 +29,15 @@ EmptyFboApp::EmptyFboApp()
 	gl::ScopedFramebuffer scopedFbo( fbo );
 
 	// attach the first texture and clear it with red
-	gl::frameBufferTexture( mTextureRed, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+	gl::frameBufferTexture( mTextureRed, GL_COLOR_ATTACHMENT0, 0 );
 	gl::clear( Color( 1.0f, 0.0f, 0.0f ) );
 	
 	// replace the first attachement by the second texture and clear it with green
-	gl::frameBufferTexture( mTextureGreen, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+	gl::frameBufferTexture( mTextureGreen, GL_COLOR_ATTACHMENT0, 0 );
 	gl::clear( Color( 0.0f, 1.0f, 0.0f ) );
 	
 	// replace the first attachement by the third texture and clear it with blue
-	gl::frameBufferTexture( mTextureBlue, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+	gl::frameBufferTexture( mTextureBlue, GL_COLOR_ATTACHMENT0, 0 );
 	gl::clear( Color( 0.0f, 0.0f, 1.0f ) );
 
 	// just to make sure let's check if there's an issue with our fbo	
@@ -86,14 +86,14 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 	gl::ScopedFramebuffer scopedFbo( fbo );
 	if( event.isLeft() ) {
 		// attach the current texture and clear it with a random color
-		gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+		gl::frameBufferTexture( tex, GL_COLOR_ATTACHMENT0, 0 );
 		gl::Fbo::checkStatus();
 
 		gl::clear( Color( randFloat(), randFloat(), randFloat() ) );
 	}
 	else if( event.isRight() && event.isShiftDown() ) {
 		// attach the current texture and draw a teapot without depth testing
-		gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+		gl::frameBufferTexture( tex, GL_COLOR_ATTACHMENT0, 0 );
 		gl::Fbo::checkStatus();
 		
 		gl::ScopedDepth scopedDepth( true ); // has no effect because we don't have a depth buffer
@@ -108,8 +108,8 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 		auto depthTexture = gl::Texture2d::create( tex->getWidth(), tex->getHeight(), gl::Texture2d::Format().internalFormat( GL_DEPTH_COMPONENT24 ) );
 
 		// attach the current texture and depth texture and draw a teapot with proper depth testing
-		gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
-		gl::frameBufferTexture( depthTexture, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0 );
+		gl::frameBufferTexture( tex, GL_COLOR_ATTACHMENT0, 0 );
+		gl::frameBufferTexture( depthTexture, GL_DEPTH_ATTACHMENT, 0 );
 		gl::Fbo::checkStatus();
 		
 		gl::clear( GL_DEPTH_BUFFER_BIT );
@@ -126,8 +126,8 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 		auto depthBuffer = gl::Renderbuffer::create( tex->getWidth(), tex->getHeight(), GL_DEPTH_COMPONENT24 );
 
 		// attach the current texture and depth buffer and draw a teapot with proper depth testing
-		gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
-		gl::framebufferRenderbuffer( depthBuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT );
+		gl::frameBufferTexture( tex, GL_COLOR_ATTACHMENT0, 0 );
+		gl::framebufferRenderbuffer( depthBuffer, GL_DEPTH_ATTACHMENT );
 		gl::Fbo::checkStatus();
 		
 		gl::clear( GL_DEPTH_BUFFER_BIT );
@@ -149,9 +149,9 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		// create an empty fbo, attach the 3 textures and clear them with black
 		auto fbo = gl::Fbo::createEmpty();
 		gl::ScopedFramebuffer scopedFbo( fbo );
-		gl::frameBufferTexture( mTextureRed, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
-		gl::frameBufferTexture( mTextureGreen, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, 0 );
-		gl::frameBufferTexture( mTextureBlue, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, 0 );
+		gl::frameBufferTexture( mTextureRed, GL_COLOR_ATTACHMENT0, 0 );
+		gl::frameBufferTexture( mTextureGreen, GL_COLOR_ATTACHMENT1, 0 );
+		gl::frameBufferTexture( mTextureBlue, GL_COLOR_ATTACHMENT2, 0 );
 		gl::Fbo::checkStatus();
 		
 		gl::ScopedDrawBuffers drawBuffers( { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 } );
@@ -167,8 +167,8 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		auto fbo0 = gl::Fbo::createEmpty();
 		{
 			gl::ScopedFramebuffer scopedFbo( fbo0 );
-			gl::framebufferRenderbuffer( colorBuffer, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 );
-			gl::framebufferRenderbuffer( depthBuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT );
+			gl::framebufferRenderbuffer( colorBuffer, GL_COLOR_ATTACHMENT0 );
+			gl::framebufferRenderbuffer( depthBuffer, GL_DEPTH_ATTACHMENT );
 			gl::Fbo::checkStatus();
 		
 			gl::clear();
@@ -188,7 +188,7 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		// create the second fbo and attach its texture
 		auto fbo1 = gl::Fbo::createEmpty();
 		gl::ScopedFramebuffer scopedFbo( fbo1 );
-		gl::frameBufferTexture( mTextureRed, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+		gl::frameBufferTexture( mTextureRed, GL_COLOR_ATTACHMENT0, 0 );
 
 		// blit fbo0 to fbo1
 		fbo0->blitTo( fbo1, mTextureRed->getBounds(), mTextureRed->getBounds() );
@@ -202,8 +202,8 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		auto fbo0 = gl::Fbo::createEmpty();
 		{
 			gl::ScopedFramebuffer scopedFbo( fbo0 );
-			gl::framebufferRenderbuffer( colorBuffer, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 );
-			gl::framebufferRenderbuffer( depthBuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT );
+			gl::framebufferRenderbuffer( colorBuffer, GL_COLOR_ATTACHMENT0 );
+			gl::framebufferRenderbuffer( depthBuffer, GL_DEPTH_ATTACHMENT );
 			gl::Fbo::checkStatus();
 		
 			gl::clear();
@@ -223,7 +223,7 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		// create the second fbo and attach its texture
 		auto fbo1 = gl::Fbo::createEmpty();
 		gl::ScopedFramebuffer scopedFbo( fbo1 );
-		gl::frameBufferTexture( mTextureGreen, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+		gl::frameBufferTexture( mTextureGreen, GL_COLOR_ATTACHMENT0, 0 );
 
 		// resolve the multisample anti-aliasing by blitting the multisample fbo to the regular one
 		fbo0->blitTo( fbo1, mTextureGreen->getBounds(), mTextureGreen->getBounds() ); 
@@ -238,8 +238,8 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		auto fbo0 = gl::Fbo::createEmpty();
 		{
 			gl::ScopedFramebuffer scopedFbo( fbo0 );
-			gl::frameBufferTexture( colorBuffer, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
-			gl::frameBufferTexture( depthBuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0 );
+			gl::frameBufferTexture( colorBuffer, GL_COLOR_ATTACHMENT0, 0 );
+			gl::frameBufferTexture( depthBuffer, GL_DEPTH_ATTACHMENT, 0 );
 			if( ! gl::Fbo::checkStatus() ) console() << "INCOMPLETE!!!" << endl;
 		
 			gl::clear();
@@ -259,7 +259,7 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		// create the second fbo and attach its texture
 		auto fbo1 = gl::Fbo::createEmpty();
 		gl::ScopedFramebuffer scopedFbo( fbo1 );
-		gl::frameBufferTexture( mTextureBlue, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+		gl::frameBufferTexture( mTextureBlue, GL_COLOR_ATTACHMENT0, 0 );
 
 		// resolve the multisample anti-aliasing by blitting the multisample fbo to the regular one
 		fbo0->blitTo( fbo1, mTextureGreen->getBounds(), mTextureGreen->getBounds() ); 

@@ -343,12 +343,12 @@ void	drawBuffer( GLenum dst );
 // FrameBuffers
 
 //! Attaches a \a renderbuffer to a framebuffer object. Analogous to glFramebufferRenderbuffer().
-void	framebufferRenderbuffer( const RenderbufferRef &renderbuffer, GLenum target, GLenum attachment );
+void	framebufferRenderbuffer( const RenderbufferRef &renderbuffer, GLenum attachment );
 //! Attaches a \a renderbuffer to a framebuffer object. Analogous to glFramebufferRenderbuffer(). renderbuffertarget must be GL_RENDERBUFFER. 
 void	framebufferRenderbuffer( GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer );
 
 //! Attaches a \a level of a \a texture to a framebuffer object. Analogous to glFramebufferTexture() and emulated glFramebufferTexture2D() on ES 2 and 3.
-void	frameBufferTexture( const TextureBaseRef &texture, GLenum target, GLenum attachment, GLint level );
+void	frameBufferTexture( const TextureBaseRef &texture, GLenum attachment, GLint level );
 #if ! defined( CINDER_GL_ES )
 //! Attaches a \a level of a \a texture to a framebuffer object. Analogous to glFramebufferTexture().
 void	frameBufferTexture( GLenum target, GLenum attachment, GLuint texture, GLint level );
@@ -359,9 +359,9 @@ void	frameBufferTexture2d( GLenum target, GLenum attachment, GLenum textarget, G
 
 #if ! defined( CINDER_GL_ES_2 )
 //! Attaches a single \a layer of a \a texture3d to a framebuffer object. Analogous to glFramebufferTextureLayer().
-void	frameBufferTextureLayer( const Texture3dRef &texture, GLenum target, GLenum attachment, GLint level, GLint layer );
+void	frameBufferTextureLayer( const Texture3dRef &texture, GLenum attachment, GLint level, GLint layer );
 //! Attaches a single \a layer of a \a textureCubeMap to a framebuffer object. Analogous to glFramebufferTextureLayer().
-void	frameBufferTextureLayer( const TextureCubeMapRef &texture, GLenum target, GLenum attachment, GLint level, GLint layer );
+void	frameBufferTextureLayer( const TextureCubeMapRef &texture, GLenum attachment, GLint level, GLint layer );
 //! Attaches a single \a layer of a \a texture to a framebuffer object. Analogous to glFramebufferTextureLayer().
 void	frameBufferTextureLayer( GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer );
 #endif

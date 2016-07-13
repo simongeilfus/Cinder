@@ -949,9 +949,9 @@ void drawBuffer( GLenum dst )
 }
 #endif // ! defined( CINDER_GL_ES_2 )
 
-void framebufferRenderbuffer( const RenderbufferRef &renderbuffer, GLenum target, GLenum attachment )
+void framebufferRenderbuffer( const RenderbufferRef &renderbuffer, GLenum attachment )
 {
-	glFramebufferRenderbuffer( target, attachment, GL_RENDERBUFFER, renderbuffer->getId() );
+	glFramebufferRenderbuffer( GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, renderbuffer->getId() );
 }
 
 void framebufferRenderbuffer( GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer )
@@ -959,10 +959,10 @@ void framebufferRenderbuffer( GLenum target, GLenum attachment, GLenum renderbuf
 	glFramebufferRenderbuffer( target, attachment, renderbuffertarget, renderbuffer );
 }
 
-void frameBufferTexture( const TextureBaseRef &texture, GLenum target, GLenum attachment, GLint level )
+void frameBufferTexture( const TextureBaseRef &texture, GLenum attachment, GLint level )
 {
 #if ! defined( CINDER_GL_ES )
-	glFramebufferTexture( target, attachment, texture->getId(), level );
+	glFramebufferTexture( GL_FRAMEBUFFER, attachment, texture->getId(), level );
 #else
 	GLenum texTarget = texture->getTarget();
 	if( ! ( texTarget == GL_TEXTURE_2D || 
@@ -979,7 +979,7 @@ void frameBufferTexture( const TextureBaseRef &texture, GLenum target, GLenum at
 		CI_ASSERT( 0 );
 	}
 
-	glFramebufferTexture2D( target, attachment, texTarget, texture->getId(), level );
+	glFramebufferTexture2D( GL_FRAMEBUFFER, attachment, texTarget, texture->getId(), level );
 
 #endif
 }
@@ -997,14 +997,14 @@ void frameBufferTexture2d( GLenum target, GLenum attachment, GLenum textarget, G
 
 
 #if ! defined( CINDER_GL_ES_2 )
-void frameBufferTextureLayer( const Texture3dRef &texture, GLenum target, GLenum attachment, GLint level, GLint layer )
+void frameBufferTextureLayer( const Texture3dRef &texture, GLenum attachment, GLint level, GLint layer )
 {
-	glFramebufferTextureLayer( target, attachment, texture->getId(), level, layer );
+	glFramebufferTextureLayer( GL_FRAMEBUFFER, attachment, texture->getId(), level, layer );
 }
 
-void frameBufferTextureLayer( const TextureCubeMapRef &texture, GLenum target, GLenum attachment, GLint level, GLint layer )
+void frameBufferTextureLayer( const TextureCubeMapRef &texture, GLenum attachment, GLint level, GLint layer )
 {
-	glFramebufferTextureLayer( target, attachment, texture->getId(), level, layer );
+	glFramebufferTextureLayer( GL_FRAMEBUFFER, attachment, texture->getId(), level, layer );
 }
 
 void frameBufferTextureLayer( GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer )
