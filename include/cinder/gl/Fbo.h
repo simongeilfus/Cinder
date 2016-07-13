@@ -100,13 +100,13 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
   public:
 	struct Format;
 	
-	//! Creates an empty FBO
-	static FboRef create();
 	//! Creates an FBO \a width pixels wide and \a height pixels high, using Fbo::Format \a format
 	static FboRef create( int width, int height, const Format &format = Format() );
 	//! Creates an FBO \a width pixels wide and \a height pixels high, a color texture (with optional \a alpha channel), and optionally a \a depth buffer and \a stencil buffer
 	static FboRef create( int width, int height, bool alpha, bool depth = true, bool stencil = false );
 	~Fbo();
+	//! Creates an empty FBO
+	static FboRef createEmpty();
 
 	//! Returns the width of the FBO in pixels
 	int				getWidth() const { return mWidth; }

@@ -254,10 +254,6 @@ void Fbo::Format::removeAttachment( GLenum attachmentPoint )
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fbo
-FboRef Fbo::create()
-{
-	return FboRef( new Fbo() );
-}
 FboRef Fbo::create( int width, int height, const Format &format )
 {
 	return FboRef( new Fbo( width, height, format ) );
@@ -271,6 +267,10 @@ FboRef Fbo::create( int width, int height, bool alpha, bool depth, bool stencil 
 	format.mStencilBuffer = stencil;
 
 	return FboRef( new Fbo( width, height, format ) );
+}
+FboRef Fbo::createEmpty()
+{
+	return FboRef( new Fbo() );
 }
 
 Fbo::Fbo()
