@@ -24,6 +24,8 @@
 #include "cinder/gl/wrapper.h"
 #include "cinder/gl/Environment.h"
 #include "cinder/gl/Batch.h"
+#include "cinder/gl/Fbo.h"
+#include "cinder/gl/Texture.h"
 #include "cinder/gl/scoped.h"
 #include "cinder/Log.h"
 
@@ -946,6 +948,71 @@ void drawBuffer( GLenum dst )
 #endif
 }
 #endif // ! defined( CINDER_GL_ES_2 )
+
+void framebufferRenderbuffer( const RenderbufferRef &renderbuffer, GLenum target, GLenum attachment )
+{
+	glFramebufferRenderbuffer( target, attachment, GL_RENDERBUFFER, renderbuffer->getId() );
+}
+
+void framebufferRenderbuffer( GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer )
+{
+	glFramebufferRenderbuffer( target, attachment, renderbuffertarget, renderbuffer );
+}
+
+void frameBufferTexture( const TextureBaseRef &texture, GLenum target, GLenum attachment, GLint level )
+{
+#if ! defined( CINDER_GL_ES )
+	glFramebufferTexture( target, attachment, texture->getId(), level );
+	
+#else
+	GLenum texTarget = texture->getTarget();
+	if( ! ( texTarget == GL_TEXTURE_2D || 
+#if ! defined( CINDER_GL_ES_2 )
+		texTarget == GL_TEXTURE_2D_MULTISAMPLE ||
+#endif
+		texTarget == GL_TEXTURE_CUBE_MAP_POSITIVE_X ||
+		texTarget == GL_TEXTURE_CUBE_MAP_NEGATIVE_X ||
+		texTarget == GL_TEXTURE_CUBE_MAP_POSITIVE_Y ||
+		texTarget == GL_TEXTURE_CUBE_MAP_NEGATIVE_Y ||
+		texTarget == GL_TEXTURE_CUBE_MAP_POSITIVE_Z ||
+		texTarget == GL_TEXTURE_CUBE_MAP_NEGATIVE_Z ) ) {
+		CI_LOG_E( "frameBufferTexture target not supported on this platform" );
+		CI_ASSERT( 0 );
+	}
+
+	glFramebufferTexture2D( target, attachment, texTarget, texture->getId(), level );
+
+#endif
+}
+
+#if ! defined( CINDER_GL_ES )
+void frameBufferTexture( GLenum target, GLenum attachment, GLuint texture, GLint level )
+{
+	glFramebufferTexture( target, attachment, texture, level );
+}
+#else
+void frameBufferTexture2d( GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level )
+{
+	glFramebufferTexture2D( target, attachment, textarget, texture, level );
+}
+#endif
+
+#if ! defined( CINDER_GL_ES_2 )
+void frameBufferTextureLayer( const Texture3dRef &texture, GLenum target, GLenum attachment, GLint level, GLint layer )
+{
+	glFramebufferTextureLayer( target, attachment, texture->getId(), level, layer );
+}
+
+void frameBufferTextureLayer( const TextureCubeMapRef &texture, GLenum target, GLenum attachment, GLint level, GLint layer )
+{
+	glFramebufferTextureLayer( target, attachment, texture->getId(), level, layer );
+}
+
+void frameBufferTextureLayer( GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer )
+{
+	glFramebufferTextureLayer( target, attachment, texture, level, layer );
+}
+#endif
 
 void readPixels( GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *data )
 {
