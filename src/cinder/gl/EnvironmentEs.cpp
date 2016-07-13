@@ -194,7 +194,7 @@ void EnvironmentEs::allocateTexStorage2dMultisample( GLenum target, GLsizei samp
 #endif*/
 }
 
-void EnvironmentEs::allocateTexStorage3dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations, bool immutable, GLint texImageDataType )
+void EnvironmentEs::allocateTexStorage3dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations, bool immutable )
 {
 	CI_LOG_E( "allocateTexStorage3dMultisample called on unsupported platform" );
 }
