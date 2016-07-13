@@ -142,7 +142,12 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
 	static void 	unbindFramebuffer();
 	//! Resolves internal Multisample FBO to attached Textures. Only necessary when not using getColorTexture() or getTexture(), which resolve automatically.
 	void			resolveTextures() const;
-
+	
+	//! Attaches a \a renderbuffer to the Fbo. Analogous to glFramebufferRenderbuffer().
+	void		attach( const RenderbufferRef &renderbuffer, GLenum attachment );
+	//! Attaches a \a level of a \a texture the Fbo. Analogous to glFramebufferTexture() and emulated glFramebufferTexture2D() on ES 2 and 3.
+	void		attach( const TextureBaseRef &texture, GLenum attachment, GLint level = 0 );
+	
 	//! Returns the ID of the framebuffer. For antialiased FBOs this is the ID of the output multisampled FBO
 	GLuint		getId() const { if( mMultisampleFramebufferId ) return mMultisampleFramebufferId; else return mId; }
 

@@ -614,6 +614,69 @@ void Fbo::resolveTextures() const
 	mNeedsResolve = false;
 }
 
+
+void Fbo::attach( const RenderbufferRef &renderbuffer, GLenum attachment )
+{
+	if( ( (attachment < GL_COLOR_ATTACHMENT0) || (attachment > MAX_COLOR_ATTACHMENT) ) && (attachment != GL_DEPTH_ATTACHMENT)
+#if ! defined( CINDER_GL_ES_2 )
+		&& (attachment != GL_DEPTH_STENCIL_ATTACHMENT) )
+#else
+	)
+#endif
+	{
+		CI_LOG_W( "Illegal constant for texture attachment: " << gl::constantToString( attachment ) );
+	}
+
+	ScopedFramebuffer fbScp( GL_DRAW_FRAMEBUFFER, mId );
+	gl::framebufferRenderbuffer( renderbuffer, attachment );
+	checkStatus();
+	
+	// update fbo attachment slots
+	mAttachmentsBuffer[attachment] = renderbuffer;
+	mAttachmentsTexture.erase( attachment );
+	if( mFormat.mSamples > 0 ) {
+		//mAttachmentsMultisampleBuffer[attachment] = multisampleBuffer;
+	}
+	else {
+		mAttachmentsMultisampleBuffer.erase( attachment );
+	}
+	
+	// update fbo size
+	mWidth = renderbuffer->getWidth();
+	mHeight = renderbuffer->getHeight();
+}
+
+void Fbo::attach( const TextureBaseRef &texture, GLenum attachment, GLint level )
+{
+	if( ( (attachment < GL_COLOR_ATTACHMENT0) || (attachment > MAX_COLOR_ATTACHMENT) ) && (attachment != GL_DEPTH_ATTACHMENT)
+#if ! defined( CINDER_GL_ES_2 )
+		&& (attachment != GL_DEPTH_STENCIL_ATTACHMENT) )
+#else
+	)
+#endif
+	{
+		CI_LOG_W( "Illegal constant for texture attachment: " << gl::constantToString( attachment ) );
+	}
+
+	ScopedFramebuffer fbScp( GL_DRAW_FRAMEBUFFER, mId );
+	gl::framebufferTexture( texture, attachment, level );
+	checkStatus();
+	
+	// update fbo attachment slots
+	mAttachmentsTexture[attachment] = texture;
+	mAttachmentsBuffer.erase( attachment );
+	if( mFormat.mSamples > 0 ) {
+		//mAttachmentsMultisampleBuffer[attachment] = multisampleBuffer;
+	}
+	else {
+		mAttachmentsMultisampleBuffer.erase( attachment );
+	}
+	
+	// update fbo size
+	mWidth = texture->getWidth();
+	mHeight = texture->getHeight();
+}
+
 void Fbo::updateMipmaps( GLenum attachment ) const
 {
 	if( ! mNeedsMipmapUpdate )
