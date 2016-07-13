@@ -81,8 +81,11 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 	else if( event.getPos().x > getWindowWidth() / 3 * 2 ) tex = mTextureBlue;
 	else tex = mTextureGreen;
 	
+	// create an empty fbo and bind it
+	auto fbo = gl::Fbo::create();
+	gl::ScopedFramebuffer scopedFbo( fbo );
 	if( event.isLeft() ) {
-		// create an empty fbo, attach one of the textures and clear it with a random color
+		// attach the current texture and clear it with a random color
 		auto fbo = gl::Fbo::create();
 		gl::ScopedFramebuffer scopedFbo( fbo );
 		gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
@@ -91,7 +94,7 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 		gl::clear( Color( randFloat(), randFloat(), randFloat() ) );
 	}
 	else if( event.isRight() && event.isShiftDown() ) {
-		// create an empty fbo, attach one of the textures and draw a teapot without depthbuffer
+		// attach the current texture and draw a teapot without depth testing
 		auto fbo = gl::Fbo::create();
 		gl::ScopedFramebuffer scopedFbo( fbo );
 		gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
@@ -104,11 +107,11 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 		auto teapot = gl::Batch::create( geom::Teapot(), gl::getStockShader( gl::ShaderDef().lambert() ) );
 		teapot->draw();
 	}
-	else if( event.isRight() ) {
+	else if( event.isRight() && event.isAltDown() ) {
 		// create a depth texture
 		auto depthTexture = gl::Texture2d::create( tex->getWidth(), tex->getHeight(), gl::Texture2d::Format().internalFormat( GL_DEPTH_COMPONENT24 ) );
 
-		// create an empty fbo, attach one of the textures and draw a teapot with a depthbuffer
+		// attach the current texture and depth texture and draw a teapot with proper depth testing
 		auto fbo = gl::Fbo::create();
 		gl::ScopedFramebuffer scopedFbo( fbo );
 		gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
@@ -124,10 +127,30 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 		auto teapot = gl::Batch::create( geom::Teapot(), gl::getStockShader( gl::ShaderDef().lambert() ) );
 		teapot->draw();
 	}
+	else if( event.isRight() ) {
+		// create a depth buffer
+		auto depthBuffer = gl::Renderbuffer::create( tex->getWidth(), tex->getHeight(), GL_DEPTH_COMPONENT24 );
+
+		// attach the current texture and depth buffer and draw a teapot with proper depth testing
+		auto fbo = gl::Fbo::create();
+		gl::ScopedFramebuffer scopedFbo( fbo );
+		gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+		gl::framebufferRenderbuffer( depthBuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT );
+		gl::Fbo::checkStatus();
+		
+		gl::clear( GL_DEPTH_BUFFER_BIT );
+
+		gl::ScopedDepth scopedDepth( true );
+		gl::ScopedViewport viewport( tex->getSize() );
+		gl::setMatrices( CameraPersp( tex->getWidth(), tex->getHeight(), 50.0f, 0.1f, 100.0f ).calcFraming( Sphere( vec3( 0.0f ), 2.0f ) ) );
+		
+		auto teapot = gl::Batch::create( geom::Teapot(), gl::getStockShader( gl::ShaderDef().lambert() ) );
+		teapot->draw();
+	}
 }
 void EmptyFboApp::keyDown( KeyEvent event ) 
 {
-	if( event.getCode() == KeyEvent::KEY_SPACE ) {
+	if( event.getCode() == KeyEvent::KEY_1 ) {
 		// create an empty fbo, attach the 3 textures and clear them with black
 		auto fbo = gl::Fbo::create();
 		gl::ScopedFramebuffer scopedFbo( fbo );
@@ -140,6 +163,75 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		gl::drawBuffers( 3, &buffers[0] );
 		gl::clear( Color::black() );
 		gl::drawBuffer( GL_COLOR_ATTACHMENT0 );
+	}
+	else if( event.getCode() == KeyEvent::KEY_2 ) {
+		// create two empty fbo2, attach renderbuffers to the first and the red texture to the other.
+		// render cubes in the first and then blit it to the second
+		auto colorBuffer = gl::Renderbuffer::create( mTextureRed->getWidth(), mTextureRed->getHeight() );
+		auto depthBuffer = gl::Renderbuffer::create( mTextureRed->getWidth(), mTextureRed->getHeight(), GL_DEPTH_COMPONENT24 );
+		auto fbo0 = gl::Fbo::create();
+		{
+			gl::ScopedFramebuffer scopedFbo( fbo0 );
+			gl::framebufferRenderbuffer( colorBuffer, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 );
+			gl::framebufferRenderbuffer( depthBuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT );
+			gl::Fbo::checkStatus();
+		
+			gl::clear();
+
+			gl::ScopedDepth scopedDepth( true );
+			gl::ScopedViewport viewport( mTextureRed->getSize() );
+			gl::setMatrices( CameraPersp( mTextureRed->getWidth(), mTextureRed->getHeight(), 50.0f, 0.1f, 100.0f ).calcFraming( Sphere( vec3( 0.0f ), 2.0f ) ) );
+		
+			auto colorCube = gl::Batch::create( geom::Cube().colors(), gl::getStockShader( gl::ShaderDef().color() ) );
+			for( int i = 0; i < 150; ++i ) {
+				gl::ScopedModelMatrix scopedMat;
+				gl::multModelMatrix( glm::scale( vec3( randFloat() ) ) * glm::rotate( randFloat(), randVec3() ) * glm::translate( randVec3() * randFloat( 0.0f, 10.0f ) ) );
+				colorCube->draw();
+			}
+		}
+	
+		// create the second fbo and attach its texture
+		auto fbo1 = gl::Fbo::create();
+		gl::ScopedFramebuffer scopedFbo( fbo1 );
+		gl::frameBufferTexture( mTextureRed, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+
+		// blit fbo0 to fbo1
+		fbo0->blitTo( fbo1, mTextureRed->getBounds(), mTextureRed->getBounds() );
+	}
+	else if( event.getCode() == KeyEvent::KEY_3 ) {
+		// Multisampling test
+		// create two empty fbo2, attach renderbuffers to the first and the red texture to the other.
+		// render cubes in the first and then blit it to the second
+		auto colorBuffer = gl::Renderbuffer::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), GL_RGBA8, gl::Fbo::getMaxSamples() );
+		auto depthBuffer = gl::Renderbuffer::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), GL_DEPTH_COMPONENT24, gl::Fbo::getMaxSamples() );
+		auto fbo0 = gl::Fbo::create();
+		{
+			gl::ScopedFramebuffer scopedFbo( fbo0 );
+			gl::framebufferRenderbuffer( colorBuffer, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 );
+			gl::framebufferRenderbuffer( depthBuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT );
+			gl::Fbo::checkStatus();
+		
+			gl::clear();
+
+			gl::ScopedDepth scopedDepth( true );
+			gl::ScopedViewport viewport( mTextureGreen->getSize() );
+			gl::setMatrices( CameraPersp( mTextureGreen->getWidth(), mTextureGreen->getHeight(), 50.0f, 0.1f, 100.0f ).calcFraming( Sphere( vec3( 0.0f ), 2.0f ) ) );
+		
+			auto colorCube = gl::Batch::create( geom::Cube().colors(), gl::getStockShader( gl::ShaderDef().color() ) );
+			for( int i = 0; i < 150; ++i ) {
+				gl::ScopedModelMatrix scopedMat;
+				gl::multModelMatrix( glm::scale( vec3( randFloat() ) ) * glm::rotate( randFloat(), randVec3() ) * glm::translate( randVec3() * randFloat( 0.0f, 10.0f ) ) );
+				colorCube->draw();
+			}
+		}
+	
+		// create the second fbo and attach its texture
+		auto fbo1 = gl::Fbo::create();
+		gl::ScopedFramebuffer scopedFbo( fbo1 );
+		gl::frameBufferTexture( mTextureGreen, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+
+		// resolve the multisample anti-aliasing by blitting the multisample fbo to the regular one
+		fbo0->blitTo( fbo1, mTextureGreen->getBounds(), mTextureGreen->getBounds() ); 
 	}
 }
 
