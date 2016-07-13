@@ -778,6 +778,15 @@ Surface8u Fbo::readPixels8u( const Area &area, GLenum attachment ) const
 	return result;
 }
 
+bool Fbo::checkStatus()
+{
+	FboExceptionInvalidSpecification exc;
+	bool status = checkStatus( &exc );
+	if( ! status ) // failed creation; throw
+		throw exc;
+	return false;
+}
+
 #if ! defined( CINDER_GL_ES )
 void Fbo::blitTo( const FboRef &dst, const Area &srcArea, const Area &dstArea, GLenum filter, GLbitfield mask ) const
 {
