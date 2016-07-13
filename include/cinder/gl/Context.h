@@ -207,6 +207,21 @@ class Context {
 	GLuint		getRenderbufferBinding( GLenum target );
 	//! No-op if Renderbuffer wasn't bound, otherwise reflects the binding as 0 (in accordance with what GL has done automatically).
 	void		renderbufferDeleted( const Renderbuffer *buffer );
+	
+	#if ! defined( CINDER_GL_ES_2 )
+	//! Analogous to glDrawBuffers().
+	void				drawBuffers( GLsizei num, const GLenum *bufs );
+	//! Analogous to glDrawBuffer(), and emulated on ES 3
+	void				drawBuffer( GLenum buffer );
+	//! Pushes and sets the draw \a buffers.
+	void				pushDrawBuffers( GLsizei num, const GLenum *buffers );
+	//! Pushes and sets the draw \a buffer.
+	void				pushDrawBuffer( GLenum buffer );
+	//! Pops the draw buffer stack.  If \a forceRestore then redundancy checks are skipped and the hardware state is always set.
+	void				popDrawBuffers( bool forceRestore = false );
+	//! Returns the current draw buffers
+	std::vector<GLenum> getDrawBuffers();
+	#endif
 
 	//! Binds GLSL program \a prog. Analogous to glUseProgram()
 	void				bindGlslProg( const GlslProg* prog );
@@ -480,6 +495,7 @@ class Context {
 	std::vector<GLint>			mFramebufferStack;
 #else
 	std::vector<GLint>			mReadFramebufferStack, mDrawFramebufferStack;
+	std::vector<std::vector<GLenum>>	mDrawBufferStack;
 #endif
 
 	std::vector<GLenum>			mCullFaceStack;

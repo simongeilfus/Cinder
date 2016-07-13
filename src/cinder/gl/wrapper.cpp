@@ -935,17 +935,12 @@ void readBuffer( GLenum src )
 
 void drawBuffers( GLsizei num, const GLenum *bufs )
 {
-	glDrawBuffers( num, bufs );
+	context()->drawBuffers( num, bufs );
 }
 
 void drawBuffer( GLenum dst )
 {
-#if ! defined( CINDER_GL_ES )
-	glDrawBuffer( dst );
-#else
-	const GLenum bufs[] = { dst };
-	glDrawBuffers( 1, bufs );
-#endif
+	context()->drawBuffer( dst );
 }
 #endif // ! defined( CINDER_GL_ES_2 )
 
@@ -990,12 +985,12 @@ void frameBufferTexture( GLenum target, GLenum attachment, GLuint texture, GLint
 {
 	glFramebufferTexture( target, attachment, texture, level );
 }
-#else
+#endif
 void frameBufferTexture2d( GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level )
 {
 	glFramebufferTexture2D( target, attachment, textarget, texture, level );
 }
-#endif
+
 
 #if ! defined( CINDER_GL_ES_2 )
 void frameBufferTextureLayer( const Texture3dRef &texture, GLenum target, GLenum attachment, GLint level, GLint layer )

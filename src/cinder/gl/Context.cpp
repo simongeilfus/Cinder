@@ -707,6 +707,74 @@ void Context::renderbufferDeleted( const Renderbuffer *buffer )
 		mRenderbufferBindingStack[target].push_back( 0 );
 }
 
+
+#if ! defined( CINDER_GL_ES_2 )
+void Context::drawBuffers( GLsizei num, const GLenum *buffers )
+{
+	vector<GLenum> buffersCopy( buffers, buffers + num );
+	if( setStackState( mDrawBufferStack, buffersCopy ) ) 
+		glDrawBuffers( num, buffers );
+}
+void Context::drawBuffer( GLenum buffer )
+{
+	vector<GLenum> buffersCopy = { buffer };
+	if( setStackState( mDrawBufferStack, buffersCopy ) ) {
+#if ! defined( CINDER_GL_ES )
+		glDrawBuffer( buffer );
+#else
+		glDrawBuffers( 1, &buffersCopy[0] );
+#endif
+	}
+}
+void Context::pushDrawBuffers( GLsizei num, const GLenum *buffers )
+{
+	vector<GLenum> buffersCopy( buffers, buffers + num );
+	if( pushStackState( mDrawBufferStack, buffersCopy ) ) 
+		glDrawBuffers( num, buffers );
+}
+void Context::pushDrawBuffer( GLenum buffer )
+{
+	vector<GLenum> buffersCopy = { buffer };
+	if( pushStackState( mDrawBufferStack, buffersCopy ) ) {
+#if ! defined( CINDER_GL_ES )
+		glDrawBuffer( buffer );
+#else
+		glDrawBuffers( 1, &buffersCopy[0] );
+#endif
+	}
+}
+void Context::popDrawBuffers( bool forceRestore )
+{
+	if( mDrawBufferStack.empty() )
+		CI_LOG_E( "DrawBuffers stack underflow" );
+	else if( popStackState( mDrawBufferStack ) || forceRestore ) {
+		auto buffers = getDrawBuffers();
+		glDrawBuffers( buffers.size(), &buffers[0] );
+	}
+}
+std::vector<GLenum> Context::getDrawBuffers()
+{
+	if( mDrawBufferStack.empty() ) {
+		vector<GLenum> currentBuffers;
+		GLint maxDrawBuffers;
+		glGetIntegerv( GL_MAX_DRAW_BUFFERS, &maxDrawBuffers );
+		for( size_t i = 0; i < maxDrawBuffers; ++i ) {
+			GLint queriedInt;
+			glGetIntegerv( GL_DRAW_BUFFER0 + i, &queriedInt );
+			if( queriedInt != 0 ) {
+				currentBuffers.push_back( queriedInt );
+			}
+			else break;
+		}
+
+		mDrawBufferStack.push_back( currentBuffers ); // push twice
+		mDrawBufferStack.push_back( currentBuffers );
+	}
+
+	return mDrawBufferStack.back();
+}
+#endif
+
 #if ! defined( CINDER_GL_ES_2 )
 void Context::bindBufferBase( GLenum target, GLuint index, const BufferObjRef &buffer )
 {
