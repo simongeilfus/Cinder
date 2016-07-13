@@ -12,41 +12,36 @@ class EmptyFboApp : public App {
 	EmptyFboApp();
 	void draw() override;
 	void mouseDown( MouseEvent event ) override;
+	void keyDown( KeyEvent event ) override;
 
-	gl::Texture2dRef mTextureR, mTextureG, mTextureB;
+	gl::Texture2dRef mTextureRed, mTextureGreen, mTextureBlue;
 };
 
 EmptyFboApp::EmptyFboApp()
 {
 	// create 3 test textures
-	mTextureR = gl::Texture2d::create( getWindowWidth() / 3, getWindowHeight() );
-	mTextureG = gl::Texture2d::create( getWindowWidth() / 3, getWindowHeight() );
-	mTextureB = gl::Texture2d::create( getWindowWidth() / 3, getWindowHeight() );
+	mTextureRed		= gl::Texture2d::create( getWindowWidth() / 3, getWindowHeight() );
+	mTextureGreen	= gl::Texture2d::create( getWindowWidth() / 3, getWindowHeight() );
+	mTextureBlue	= gl::Texture2d::create( getWindowWidth() / 3, getWindowHeight() );
 
 	// create an empty fbo and bind it
 	auto fbo = gl::Fbo::create();
 	gl::ScopedFramebuffer scopedFbo( fbo );
 
 	// attach the first texture and clear it with red
-	gl::frameBufferTexture( mTextureR, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
-	
-	fbo->checkStatus();
-
+	gl::frameBufferTexture( mTextureRed, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
 	gl::clear( Color( 1.0f, 0.0f, 0.0f ) );
 	
 	// replace the first attachement by the second texture and clear it with green
-	gl::frameBufferTexture( mTextureG, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
-	
-	fbo->checkStatus();
-
+	gl::frameBufferTexture( mTextureGreen, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
 	gl::clear( Color( 0.0f, 1.0f, 0.0f ) );
 	
 	// replace the first attachement by the third texture and clear it with blue
-	gl::frameBufferTexture( mTextureB, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
-	
-	fbo->checkStatus();
-
+	gl::frameBufferTexture( mTextureBlue, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
 	gl::clear( Color( 0.0f, 0.0f, 1.0f ) );
+
+	// just to make sure let's check if there's an issue with our fbo	
+	gl::Fbo::checkStatus();
 
 	// check for erros
 	CI_CHECK_GL();
@@ -71,26 +66,81 @@ void EmptyFboApp::draw()
 {
 	gl::clear( Color( 0, 0, 0 ) ); 
 	
-	gl::draw( mTextureR );
-	gl::draw( mTextureG, vec2( getWindowWidth() / 3, 0.0f ) );
-	gl::draw( mTextureB, vec2( getWindowWidth() / 3 * 2, 0.0f ) );
+	gl::ScopedViewport viewport( getWindowSize() );
+	gl::setMatricesWindow( getWindowSize() );
+	gl::draw( mTextureRed );
+	gl::draw( mTextureGreen, vec2( getWindowWidth() / 3, 0.0f ) );
+	gl::draw( mTextureBlue, vec2( getWindowWidth() / 3 * 2, 0.0f ) );
 }
 
 void EmptyFboApp::mouseDown( MouseEvent event )
 {
 	// pick the texture under the mouse
 	gl::Texture2dRef tex;
-	if( event.getPos().x < getWindowWidth() / 3 ) tex = mTextureR;
-	else if( event.getPos().x > getWindowWidth() / 3 * 2 ) tex = mTextureB;
-	else tex = mTextureG;
+	if( event.getPos().x < getWindowWidth() / 3 ) tex = mTextureRed;
+	else if( event.getPos().x > getWindowWidth() / 3 * 2 ) tex = mTextureBlue;
+	else tex = mTextureGreen;
 	
-	// create an empty fbo, attach one of the textures and clear it with a random color
-	auto fbo = gl::Fbo::create();
-	gl::ScopedFramebuffer scopedFbo( fbo );
-	gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
-	fbo->checkStatus();
-	gl::clear( Color( randFloat(), randFloat(), randFloat() ) );
+	if( event.isLeft() ) {
+		// create an empty fbo, attach one of the textures and clear it with a random color
+		auto fbo = gl::Fbo::create();
+		gl::ScopedFramebuffer scopedFbo( fbo );
+		gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+		gl::Fbo::checkStatus();
 
+		gl::clear( Color( randFloat(), randFloat(), randFloat() ) );
+	}
+	else if( event.isRight() && event.isShiftDown() ) {
+		// create an empty fbo, attach one of the textures and draw a teapot without depthbuffer
+		auto fbo = gl::Fbo::create();
+		gl::ScopedFramebuffer scopedFbo( fbo );
+		gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+		gl::Fbo::checkStatus();
+		
+		gl::ScopedDepth scopedDepth( true ); // has no effect because we don't have a depth buffer
+		gl::ScopedViewport viewport( tex->getSize() );
+		gl::setMatrices( CameraPersp( tex->getWidth(), tex->getHeight(), 50.0f, 0.1f, 100.0f ).calcFraming( Sphere( vec3( 0.0f ), 2.0f ) ) );
+		
+		auto teapot = gl::Batch::create( geom::Teapot(), gl::getStockShader( gl::ShaderDef().lambert() ) );
+		teapot->draw();
+	}
+	else if( event.isRight() ) {
+		// create a depth texture
+		auto depthTexture = gl::Texture2d::create( tex->getWidth(), tex->getHeight(), gl::Texture2d::Format().internalFormat( GL_DEPTH_COMPONENT24 ) );
+
+		// create an empty fbo, attach one of the textures and draw a teapot with a depthbuffer
+		auto fbo = gl::Fbo::create();
+		gl::ScopedFramebuffer scopedFbo( fbo );
+		gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+		gl::frameBufferTexture( depthTexture, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0 );
+		gl::Fbo::checkStatus();
+		
+		gl::clear( GL_DEPTH_BUFFER_BIT );
+
+		gl::ScopedDepth scopedDepth( true );
+		gl::ScopedViewport viewport( tex->getSize() );
+		gl::setMatrices( CameraPersp( tex->getWidth(), tex->getHeight(), 50.0f, 0.1f, 100.0f ).calcFraming( Sphere( vec3( 0.0f ), 2.0f ) ) );
+		
+		auto teapot = gl::Batch::create( geom::Teapot(), gl::getStockShader( gl::ShaderDef().lambert() ) );
+		teapot->draw();
+	}
+}
+void EmptyFboApp::keyDown( KeyEvent event ) 
+{
+	if( event.getCode() == KeyEvent::KEY_SPACE ) {
+		// create an empty fbo, attach the 3 textures and clear them with black
+		auto fbo = gl::Fbo::create();
+		gl::ScopedFramebuffer scopedFbo( fbo );
+		gl::frameBufferTexture( mTextureRed, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
+		gl::frameBufferTexture( mTextureGreen, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, 0 );
+		gl::frameBufferTexture( mTextureBlue, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, 0 );
+		gl::Fbo::checkStatus();
+	
+		GLenum buffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+		gl::drawBuffers( 3, &buffers[0] );
+		gl::clear( Color::black() );
+		gl::drawBuffer( GL_COLOR_ATTACHMENT0 );
+	}
 }
 
 CINDER_APP( EmptyFboApp, RendererGl )
