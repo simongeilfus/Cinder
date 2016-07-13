@@ -147,6 +147,9 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 		auto teapot = gl::Batch::create( geom::Teapot(), gl::getStockShader( gl::ShaderDef().lambert() ) );
 		teapot->draw();
 	}
+
+	// check for erros
+	CI_CHECK_GL();
 }
 void EmptyFboApp::keyDown( KeyEvent event ) 
 {
@@ -233,6 +236,9 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		// resolve the multisample anti-aliasing by blitting the multisample fbo to the regular one
 		fbo0->blitTo( fbo1, mTextureGreen->getBounds(), mTextureGreen->getBounds() ); 
 	}
+
+	// check for erros
+	CI_CHECK_GL();
 }
 
 CINDER_APP( EmptyFboApp, RendererGl )
