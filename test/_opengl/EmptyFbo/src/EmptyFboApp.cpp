@@ -86,8 +86,6 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 	gl::ScopedFramebuffer scopedFbo( fbo );
 	if( event.isLeft() ) {
 		// attach the current texture and clear it with a random color
-		auto fbo = gl::Fbo::create();
-		gl::ScopedFramebuffer scopedFbo( fbo );
 		gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
 		gl::Fbo::checkStatus();
 
@@ -95,8 +93,6 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 	}
 	else if( event.isRight() && event.isShiftDown() ) {
 		// attach the current texture and draw a teapot without depth testing
-		auto fbo = gl::Fbo::create();
-		gl::ScopedFramebuffer scopedFbo( fbo );
 		gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
 		gl::Fbo::checkStatus();
 		
@@ -112,8 +108,6 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 		auto depthTexture = gl::Texture2d::create( tex->getWidth(), tex->getHeight(), gl::Texture2d::Format().internalFormat( GL_DEPTH_COMPONENT24 ) );
 
 		// attach the current texture and depth texture and draw a teapot with proper depth testing
-		auto fbo = gl::Fbo::create();
-		gl::ScopedFramebuffer scopedFbo( fbo );
 		gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
 		gl::frameBufferTexture( depthTexture, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0 );
 		gl::Fbo::checkStatus();
@@ -132,8 +126,6 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 		auto depthBuffer = gl::Renderbuffer::create( tex->getWidth(), tex->getHeight(), GL_DEPTH_COMPONENT24 );
 
 		// attach the current texture and depth buffer and draw a teapot with proper depth testing
-		auto fbo = gl::Fbo::create();
-		gl::ScopedFramebuffer scopedFbo( fbo );
 		gl::frameBufferTexture( tex, GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 0 );
 		gl::framebufferRenderbuffer( depthBuffer, GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT );
 		gl::Fbo::checkStatus();
