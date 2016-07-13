@@ -99,7 +99,9 @@ std::ostream& operator<<( std::ostream &os, const Renderbuffer &rhs );
 class Fbo : public std::enable_shared_from_this<Fbo> {
   public:
 	struct Format;
-
+	
+	//! Creates an empty FBO
+	static FboRef create();
 	//! Creates an FBO \a width pixels wide and \a height pixels high, using Fbo::Format \a format
 	static FboRef create( int width, int height, const Format &format = Format() );
 	//! Creates an FBO \a width pixels wide and \a height pixels high, a color texture (with optional \a alpha channel), and optionally a \a depth buffer and \a stencil buffer
@@ -274,6 +276,7 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
 	};
 
  protected:
+	Fbo();
 	Fbo( int width, int height, const Format &format );
  
 	void		init();

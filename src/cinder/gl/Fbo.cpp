@@ -254,6 +254,10 @@ void Fbo::Format::removeAttachment( GLenum attachmentPoint )
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fbo
+FboRef Fbo::create()
+{
+	return FboRef( new Fbo() );
+}
 FboRef Fbo::create( int width, int height, const Format &format )
 {
 	return FboRef( new Fbo( width, height, format ) );
@@ -269,6 +273,11 @@ FboRef Fbo::create( int width, int height, bool alpha, bool depth, bool stencil 
 	return FboRef( new Fbo( width, height, format ) );
 }
 
+Fbo::Fbo()
+	: mId( 0 ), mMultisampleFramebufferId( 0 )
+{
+	gl::context()->framebufferCreated( this );
+}
 Fbo::Fbo( int width, int height, const Format &format )
 	: mWidth( width ), mHeight( height ), mFormat( format ), mId( 0 ), mMultisampleFramebufferId( 0 )
 {
