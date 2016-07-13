@@ -1018,6 +1018,25 @@ void readPixels( GLint x, GLint y, GLsizei width, GLsizei height, GLenum format,
 	glReadPixels( x, y, width, height, format, type, data );
 }
 
+GLint getMaxSamples()
+{
+	static GLint sMaxSamples = -1;
+#if ! defined( CINDER_GL_ES_2 )
+	if( sMaxSamples < 0 ) {
+		glGetIntegerv( GL_MAX_SAMPLES, &sMaxSamples);
+	}
+	
+	return sMaxSamples;
+#elif defined( CINDER_COCOA_TOUCH )
+	if( sMaxSamples < 0 )
+		glGetIntegerv( GL_MAX_SAMPLES_APPLE, &sMaxSamples);
+	
+	return sMaxSamples;
+#else
+	return 0;
+#endif
+}
+
 // Compute
 #if defined( CINDER_MSW ) && ! defined( CINDER_GL_ANGLE )
 ivec3 getMaxComputeWorkGroupCount()

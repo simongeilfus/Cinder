@@ -197,8 +197,8 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		// Multisampling test
 		// create two empty fbo2, attach renderbuffers to the first and the red texture to the other.
 		// render cubes in the first and then blit it to the second
-		auto colorBuffer = gl::Renderbuffer::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), GL_RGBA8, gl::Fbo::getMaxSamples() );
-		auto depthBuffer = gl::Renderbuffer::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), GL_DEPTH_COMPONENT24, gl::Fbo::getMaxSamples() );
+		auto colorBuffer = gl::Renderbuffer::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), GL_RGBA8, gl::getMaxSamples() );
+		auto depthBuffer = gl::Renderbuffer::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), GL_DEPTH_COMPONENT24, gl::getMaxSamples() );
 		auto fbo0 = gl::Fbo::createEmpty();
 		{
 			gl::ScopedFramebuffer scopedFbo( fbo0 );
@@ -233,15 +233,15 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		// create two empty fbo2, attach renderbuffers to the first and the red texture to the other.
 		// render cubes in the first and then blit it to the second
 		auto immutable = true;
-		auto colorBuffer = gl::Texture2d::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), gl::Texture2d::Format().internalFormat( GL_RGBA8 ).samples( gl::Fbo::getMaxSamples() ).immutableStorage( immutable ) );
-		auto depthBuffer = gl::Texture2d::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), gl::Texture2d::Format().internalFormat( GL_DEPTH_COMPONENT24 ).samples( gl::Fbo::getMaxSamples() ).immutableStorage( immutable ) );
+		auto colorBuffer = gl::Texture2d::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), gl::Texture2d::Format().internalFormat( GL_RGBA8 ).samples( gl::getMaxSamples() ).immutableStorage( immutable ) );
+		auto depthBuffer = gl::Texture2d::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), gl::Texture2d::Format().internalFormat( GL_DEPTH_COMPONENT24 ).samples( gl::getMaxSamples() ).immutableStorage( immutable ) );
 		auto fbo0 = gl::Fbo::createEmpty();
 		{
 			gl::ScopedFramebuffer scopedFbo( fbo0 );
 			gl::frameBufferTexture( colorBuffer, GL_COLOR_ATTACHMENT0, 0 );
 			gl::frameBufferTexture( depthBuffer, GL_DEPTH_ATTACHMENT, 0 );
 			gl::Fbo::checkStatus();
-		
+			
 			gl::clear();
 
 			gl::ScopedDepth scopedDepth( true );

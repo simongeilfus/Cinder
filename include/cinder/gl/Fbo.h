@@ -162,8 +162,8 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
 	//! Copies from the screen from Area \a srcArea to \a dstArea using filter \a filter. \a mask allows specification of color (\c GL_COLOR_BUFFER_BIT) and/or depth(\c GL_DEPTH_BUFFER_BIT). Calls glBlitFramebufferEXT() and is subject to its constraints and coordinate system.
 	void		blitFromScreen( const Area &srcArea, const Area &dstArea, GLenum filter = GL_NEAREST, GLbitfield mask = GL_COLOR_BUFFER_BIT );
 #endif
-
-	//! Returns the maximum number of samples the graphics card is capable of using per pixel in MSAA for an Fbo
+	
+	//! DEPRECATED (Use gl::getMaxSamples instead) Returns the maximum number of samples the graphics card is capable of using per pixel in MSAA for an Fbo
 	static GLint	getMaxSamples();
 	//! Returns the maximum number of color attachments the graphics card is capable of using for an Fbo
 	static GLint	getMaxAttachments();
@@ -304,7 +304,7 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
 
 	mutable bool		mNeedsResolve, mNeedsMipmapUpdate;
 	
-	static GLint		sMaxSamples, sMaxAttachments;
+	static GLint		sMaxAttachments;
 	
 	friend std::ostream& operator<<( std::ostream &os, const Fbo &rhs );
 };
