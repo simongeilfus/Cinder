@@ -177,7 +177,7 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
 	Surface8u		readPixels8u( const Area &area, GLenum attachment = GL_COLOR_ATTACHMENT0 ) const;
 
 	//! Returns whether the Fbo is valid and complete and throw an exception if not.
-	bool			checkStatus();
+	static bool		checkStatus();
 
 	//! \brief Defines the Format of the Fbo, which is passed in via create().
 	//!
@@ -288,7 +288,7 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
 	void		attachAttachments();
 	void		initMultisample( const Format &format );
 	void		updateMipmaps( GLenum attachment ) const;
-	bool		checkStatus( class FboExceptionInvalidSpecification *resultExc );
+	static bool	checkStatus( class FboExceptionInvalidSpecification *resultExc );
 	void		setDrawBuffers( GLuint fbId, const std::map<GLenum,RenderbufferRef> &attachmentsBuffer, const std::map<GLenum,TextureBaseRef> &attachmentsTexture );
 
 	int					mWidth, mHeight;
