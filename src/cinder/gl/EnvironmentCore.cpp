@@ -46,8 +46,8 @@ class EnvironmentCore : public Environment {
 	void	allocateTexStorage1d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, bool immutable, GLint texImageDataType ) override;
 	void	allocateTexStorage2d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable, GLint texImageDataType ) override;
 	void	allocateTexStorage3d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, bool immutable ) override;
-	void	allocateTexStorage2dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations, bool immutable ) override;
-	void	allocateTexStorage3dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations, bool immutable ) override;
+	void	allocateTexStorage2dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations, bool immutable, GLint texImageDataType ) override;
+	void	allocateTexStorage3dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations, bool immutable, GLint texImageDataType ) override;
 	void	allocateTexStorageCubeMap( GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable ) override;
 	
 	std::string		generateVertexShader( const ShaderDef &shader ) override;
@@ -150,7 +150,7 @@ void EnvironmentCore::allocateTexStorage3d( GLenum target, GLsizei levels, GLenu
 	}	
 }
 
-void EnvironmentCore::allocateTexStorage2dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations, bool immutable )
+void EnvironmentCore::allocateTexStorage2dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations, bool immutable, GLint texImageDataType )
 {
 	static auto texStorage2DMultisampleFn = glTexStorage2DMultisample;
 	if( texStorage2DMultisampleFn && immutable )
@@ -160,7 +160,7 @@ void EnvironmentCore::allocateTexStorage2dMultisample( GLenum target, GLsizei sa
 	}
 }
 
-void EnvironmentCore::allocateTexStorage3dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations, bool immutable )
+void EnvironmentCore::allocateTexStorage3dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations, bool immutable, GLint texImageDataType )
 {
 	static auto texStorage3DMultisampleFn = glTexStorage3DMultisample;
 	if( texStorage3DMultisampleFn && immutable )
