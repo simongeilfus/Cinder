@@ -215,8 +215,8 @@ class TextureBase {
 		void    setMaxAnisotropy( GLfloat maxAnisotropy ) { mMaxAnisotropy = maxAnisotropy; }
 		
 #if ! defined( CINDER_GL_ES )
-		//! Sets the number of samples in the multisample texture's image. 
-		void setSamples( GLsizei numSamples ) { mSamples = numSamples; }
+		//! Sets the number of samples in the multisample texture's image and whether the image will use identical sample locations and the same number of samples for all texels in the image.
+		void setSamples( GLsizei numSamples, bool fixedSampleLocations = false ) { mSamples = numSamples; mFixedSampleLocations = fixedSampleLocations; }
 #endif
 		
 		//! Returns the texture's target
@@ -251,6 +251,8 @@ class TextureBase {
 #if ! defined( CINDER_GL_ES )
 		//! Returns the number of samples in the multisample texture's image. 
 		GLsizei getNumSamples() const { return mSamples; }
+		//! Returns whether the image will use identical sample locations and the same number of samples for all texels in the image.
+		bool	hasFixedSampleLocations() const { return mFixedSampleLocations; }
 #endif
 
 #if ! defined( CINDER_GL_ES )
@@ -290,6 +292,7 @@ class TextureBase {
 		GLuint				mBaseMipmapLevel;
 		GLint				mMaxMipmapLevel;
 		GLsizei				mSamples;
+		bool				mFixedSampleLocations;
 		bool				mImmutableStorage;
 		GLfloat				mMaxAnisotropy;
 		GLint				mInternalFormat, mDataType;
@@ -500,7 +503,7 @@ class Texture2d : public TextureBase {
 		
 #if ! defined( CINDER_GL_ES )
 		//! Specifies the number of samples in the multisample texture's image. 
-		Format& samples( GLsizei numSamples ){ setSamples( numSamples ); return *this; }
+		Format& samples( GLsizei numSamples, bool fixedSampleLocations = false ){ setSamples( numSamples, fixedSampleLocations ); return *this; }
 #endif
 		Format& compareMode( GLenum compareMode ) { mCompareMode = compareMode; return *this; }
 		//! Specifies the comparison operator used when \c GL_TEXTURE_COMPARE_MODE is set to \c GL_COMPARE_R_TO_TEXTURE.
@@ -674,7 +677,7 @@ class Texture3d : public TextureBase {
 		Format& magFilter( GLenum magFilter ) { setMagFilter( magFilter ); return *this; }
 #if ! defined( CINDER_GL_ES )
 		//! Specifies the number of samples in the multisample texture's image. 
-		Format& samples( GLsizei numSamples ){ setSamples( numSamples ); return *this; }
+		Format& samples( GLsizei numSamples, bool fixedSampleLocations = false ){ setSamples( numSamples, fixedSampleLocations ); return *this; }
 #endif
 		//! Sets whether the storage for the cannot be changed in the future (making glTexImage3D() calls illegal). More efficient when possible. Default is \c false.
 		Format& immutableStorage( bool immutable = true ) { setImmutableStorage( immutable ); return *this; }
@@ -737,10 +740,6 @@ class TextureCubeMap : public TextureBase
 #endif // ! defined( CINDER_GL_ES )
 		Format& minFilter( GLenum minFilter ) { setMinFilter( minFilter ); return *this; }
 		Format& magFilter( GLenum magFilter ) { setMagFilter( magFilter ); return *this; }
-#if ! defined( CINDER_GL_ES )
-		//! Specifies the number of samples in the multisample texture's image. 
-		Format& samples( GLsizei numSamples ){ setSamples( numSamples ); return *this; }
-#endif
 		//! Sets whether the storage for the cannot be changed in the future (making glTexImage2D() calls illegal). More efficient when possible. Default is \c false.
 		Format& immutableStorage( bool immutable = true ) { setImmutableStorage( immutable ); return *this; }
 		//! Sets the debugging label associated with the Texture. Calls glObjectLabel() when available.
