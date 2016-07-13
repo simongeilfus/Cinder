@@ -27,17 +27,16 @@ EmptyFboApp::EmptyFboApp()
 	// create an empty fbo and bind it
 	auto fbo = gl::Fbo::createEmpty();
 	gl::ScopedFramebuffer scopedFbo( fbo );
-
 	// attach the first texture and clear it with red
-	gl::framebufferTexture( mTextureRed, GL_COLOR_ATTACHMENT0, 0 );
+	fbo->attach( mTextureRed, GL_COLOR_ATTACHMENT0, 0 );
 	gl::clear( Color( 1.0f, 0.0f, 0.0f ) );
 	
 	// replace the first attachement by the second texture and clear it with green
-	gl::framebufferTexture( mTextureGreen, GL_COLOR_ATTACHMENT0, 0 );
+	fbo->attach( mTextureGreen, GL_COLOR_ATTACHMENT0, 0 );
 	gl::clear( Color( 0.0f, 1.0f, 0.0f ) );
 	
 	// replace the first attachement by the third texture and clear it with blue
-	gl::framebufferTexture( mTextureBlue, GL_COLOR_ATTACHMENT0, 0 );
+	fbo->attach( mTextureBlue, GL_COLOR_ATTACHMENT0, 0 );
 	gl::clear( Color( 0.0f, 0.0f, 1.0f ) );
 
 	// just to make sure let's check if there's an issue with our fbo	
@@ -86,14 +85,14 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 	gl::ScopedFramebuffer scopedFbo( fbo );
 	if( event.isLeft() ) {
 		// attach the current texture and clear it with a random color
-		gl::framebufferTexture( tex, GL_COLOR_ATTACHMENT0, 0 );
+		fbo->attach( tex, GL_COLOR_ATTACHMENT0, 0 );
 		gl::Fbo::checkStatus();
 
 		gl::clear( Color( randFloat(), randFloat(), randFloat() ) );
 	}
 	else if( event.isRight() && event.isShiftDown() ) {
 		// attach the current texture and draw a teapot without depth testing
-		gl::framebufferTexture( tex, GL_COLOR_ATTACHMENT0, 0 );
+		fbo->attach( tex, GL_COLOR_ATTACHMENT0, 0 );
 		gl::Fbo::checkStatus();
 		
 		gl::ScopedDepth scopedDepth( true ); // has no effect because we don't have a depth buffer
@@ -108,8 +107,8 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 		auto depthTexture = gl::Texture2d::create( tex->getWidth(), tex->getHeight(), gl::Texture2d::Format().internalFormat( GL_DEPTH_COMPONENT24 ) );
 
 		// attach the current texture and depth texture and draw a teapot with proper depth testing
-		gl::framebufferTexture( tex, GL_COLOR_ATTACHMENT0, 0 );
-		gl::framebufferTexture( depthTexture, GL_DEPTH_ATTACHMENT, 0 );
+		fbo->attach( tex, GL_COLOR_ATTACHMENT0, 0 );
+		fbo->attach( depthTexture, GL_DEPTH_ATTACHMENT, 0 );
 		gl::Fbo::checkStatus();
 		
 		gl::clear( GL_DEPTH_BUFFER_BIT );
@@ -126,8 +125,8 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 		auto depthBuffer = gl::Renderbuffer::create( tex->getWidth(), tex->getHeight(), GL_DEPTH_COMPONENT24 );
 
 		// attach the current texture and depth buffer and draw a teapot with proper depth testing
-		gl::framebufferTexture( tex, GL_COLOR_ATTACHMENT0, 0 );
-		gl::framebufferRenderbuffer( depthBuffer, GL_DEPTH_ATTACHMENT );
+		fbo->attach( tex, GL_COLOR_ATTACHMENT0, 0 );
+		fbo->attach( depthBuffer, GL_DEPTH_ATTACHMENT );
 		gl::Fbo::checkStatus();
 		
 		gl::clear( GL_DEPTH_BUFFER_BIT );
@@ -142,6 +141,21 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 
 	// check for erros
 	CI_CHECK_GL();
+
+	// need more work here:	
+	console() << "fbo->getAspectRatio()\t" << fbo->getAspectRatio() << endl;
+	console() << "fbo->getBounds()\t" << fbo->getBounds() << endl;
+	console() << "fbo->getColorTexture()\t" << fbo->getColorTexture() << endl;
+	console() << "fbo->getDepthTexture()\t" << fbo->getDepthTexture() << endl;
+	console() << "fbo->getFormat()\t" << fbo->getFormat().getLabel() << endl;
+	console() << "fbo->getHeight()\t" << fbo->getHeight() << endl;
+	console() << "fbo->getLabel()\t" << fbo->getLabel() << endl;
+	console() << "fbo->getMultisampleId()\t" << fbo->getMultisampleId() << endl;
+	console() << "fbo->getResolveId()\t" << fbo->getResolveId() << endl;
+	console() << "fbo->getSize()\t" << fbo->getSize() << endl;
+	console() << "fbo->getTexture2d()\t" << fbo->getTexture2d( GL_COLOR_ATTACHMENT0 ) << endl;
+	console() << "fbo->getTextureBase()\t" << fbo->getTextureBase( GL_COLOR_ATTACHMENT0 ) << endl;
+	console() << "fbo->getWidth()\t" << fbo->getWidth() << endl;
 }
 void EmptyFboApp::keyDown( KeyEvent event ) 
 {
@@ -177,10 +191,11 @@ void EmptyFboApp::keyDown( KeyEvent event )
 			gl::ScopedViewport viewport( mTextureRed->getSize() );
 			gl::setMatrices( CameraPersp( mTextureRed->getWidth(), mTextureRed->getHeight(), 50.0f, 0.1f, 100.0f ).calcFraming( Sphere( vec3( 0.0f ), 2.0f ) ) );
 		
+			Rand rnd( 12345 );
 			auto colorCube = gl::Batch::create( geom::Cube().colors(), gl::getStockShader( gl::ShaderDef().color() ) );
 			for( int i = 0; i < 150; ++i ) {
 				gl::ScopedModelMatrix scopedMat;
-				gl::multModelMatrix( glm::scale( vec3( randFloat() ) ) * glm::rotate( randFloat(), randVec3() ) * glm::translate( randVec3() * randFloat( 0.0f, 10.0f ) ) );
+				gl::multModelMatrix( glm::scale( vec3( rnd.nextFloat() ) ) * glm::rotate( rnd.nextFloat(), rnd.nextVec3() ) * glm::translate( rnd.nextVec3() * rnd.nextFloat( 0.0f, 10.0f ) ) );
 				colorCube->draw();
 			}
 		}
@@ -212,10 +227,11 @@ void EmptyFboApp::keyDown( KeyEvent event )
 			gl::ScopedViewport viewport( mTextureGreen->getSize() );
 			gl::setMatrices( CameraPersp( mTextureGreen->getWidth(), mTextureGreen->getHeight(), 50.0f, 0.1f, 100.0f ).calcFraming( Sphere( vec3( 0.0f ), 2.0f ) ) );
 		
+			Rand rnd( 12345 );
 			auto colorCube = gl::Batch::create( geom::Cube().colors(), gl::getStockShader( gl::ShaderDef().color() ) );
 			for( int i = 0; i < 150; ++i ) {
 				gl::ScopedModelMatrix scopedMat;
-				gl::multModelMatrix( glm::scale( vec3( randFloat() ) ) * glm::rotate( randFloat(), randVec3() ) * glm::translate( randVec3() * randFloat( 0.0f, 10.0f ) ) );
+				gl::multModelMatrix( glm::scale( vec3( rnd.nextFloat() ) ) * glm::rotate( rnd.nextFloat(), rnd.nextVec3() ) * glm::translate( rnd.nextVec3() * rnd.nextFloat( 0.0f, 10.0f ) ) );
 				colorCube->draw();
 			}
 		}
@@ -233,13 +249,13 @@ void EmptyFboApp::keyDown( KeyEvent event )
 		// create two empty fbo2, attach renderbuffers to the first and the red texture to the other.
 		// render cubes in the first and then blit it to the second
 		auto immutable = true;
-		auto colorBuffer = gl::Texture2d::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), gl::Texture2d::Format().internalFormat( GL_RGBA8 ).samples( gl::getMaxSamples() ).immutableStorage( immutable ) );
-		auto depthBuffer = gl::Texture2d::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), gl::Texture2d::Format().internalFormat( GL_DEPTH_COMPONENT24 ).samples( gl::getMaxSamples() ).immutableStorage( immutable ) );
+		auto colorTexture = gl::Texture2d::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), gl::Texture2d::Format().internalFormat( GL_RGBA8 ).samples( gl::getMaxSamples() ).immutableStorage( immutable ) );
+		auto depthTexture = gl::Texture2d::create( mTextureRed->getWidth(), mTextureGreen->getHeight(), gl::Texture2d::Format().internalFormat( GL_DEPTH_COMPONENT24 ).samples( gl::getMaxSamples() ).immutableStorage( immutable ) );
 		auto fbo0 = gl::Fbo::createEmpty();
 		{
 			gl::ScopedFramebuffer scopedFbo( fbo0 );
-			gl::framebufferTexture( colorBuffer, GL_COLOR_ATTACHMENT0, 0 );
-			gl::framebufferTexture( depthBuffer, GL_DEPTH_ATTACHMENT, 0 );
+			gl::framebufferTexture( colorTexture, GL_COLOR_ATTACHMENT0, 0 );
+			gl::framebufferTexture( depthTexture, GL_DEPTH_ATTACHMENT, 0 );
 			gl::Fbo::checkStatus();
 			
 			gl::clear();
@@ -248,12 +264,15 @@ void EmptyFboApp::keyDown( KeyEvent event )
 			gl::ScopedViewport viewport( mTextureGreen->getSize() );
 			gl::setMatrices( CameraPersp( mTextureGreen->getWidth(), mTextureGreen->getHeight(), 50.0f, 0.1f, 100.0f ).calcFraming( Sphere( vec3( 0.0f ), 2.0f ) ) );
 		
+			//glEnable(GL_MULTISAMPLE);  
+			Rand rnd( 12345 );
 			auto colorCube = gl::Batch::create( geom::Cube().colors(), gl::getStockShader( gl::ShaderDef().color() ) );
 			for( int i = 0; i < 150; ++i ) {
 				gl::ScopedModelMatrix scopedMat;
-				gl::multModelMatrix( glm::scale( vec3( randFloat() ) ) * glm::rotate( randFloat(), randVec3() ) * glm::translate( randVec3() * randFloat( 0.0f, 10.0f ) ) );
+				gl::multModelMatrix( glm::scale( vec3( rnd.nextFloat() ) ) * glm::rotate( rnd.nextFloat(), rnd.nextVec3() ) * glm::translate( rnd.nextVec3() * rnd.nextFloat( 0.0f, 10.0f ) ) );
 				colorCube->draw();
 			}
+			//glDisable(GL_MULTISAMPLE);  
 		}
 	
 		// create the second fbo and attach its texture
