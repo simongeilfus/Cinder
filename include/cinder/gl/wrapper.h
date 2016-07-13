@@ -350,10 +350,10 @@ void	frameBufferTexture( const TextureBaseRef &texture, GLenum target, GLenum at
 #if ! defined( CINDER_GL_ES )
 //! Attaches a \a level of a \a texture to a framebuffer object. Analogous to glFramebufferTexture().
 void	frameBufferTexture( GLenum target, GLenum attachment, GLuint texture, GLint level );
-#else
+#endif
 //! Attaches a \a level of a \a texture to a framebuffer object. Analogous to glFramebufferTexture2d().
 void	frameBufferTexture2d( GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level );
-#endif
+
 
 #if ! defined( CINDER_GL_ES_2 )
 //! Attaches a single \a layer of a \a texture3d to a framebuffer object. Analogous to glFramebufferTextureLayer().
