@@ -46,6 +46,8 @@ class EnvironmentCore : public Environment {
 	void	allocateTexStorage1d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, bool immutable, GLint texImageDataType ) override;
 	void	allocateTexStorage2d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable, GLint texImageDataType ) override;
 	void	allocateTexStorage3d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, bool immutable ) override;
+	void	allocateTexStorage2dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations, bool immutable ) override;
+	void	allocateTexStorage3dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations, bool immutable ) override;
 	void	allocateTexStorageCubeMap( GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable ) override;
 	
 	std::string		generateVertexShader( const ShaderDef &shader ) override;
@@ -145,6 +147,26 @@ void EnvironmentCore::allocateTexStorage3d( GLenum target, GLsizei levels, GLenu
 		GLenum dataFormat, dataType;
 		TextureBase::getInternalFormatInfo( internalFormat, &dataFormat, &dataType );
 		glTexImage3D( target, 0, internalFormat, width, height, depth, 0, dataFormat, dataType, nullptr );
+	}	
+}
+
+void EnvironmentCore::allocateTexStorage2dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations, bool immutable )
+{
+	static auto texStorage2DMultisampleFn = glTexStorage2DMultisample;
+	if( texStorage2DMultisampleFn && immutable )
+		texStorage2DMultisampleFn( target, samples, internalFormat, width, height, fixedsamplelocations );
+	else {
+		glTexImage2DMultisample( target, samples, internalFormat, width, height, fixedsamplelocations );
+	}
+}
+
+void EnvironmentCore::allocateTexStorage3dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations, bool immutable )
+{
+	static auto texStorage3DMultisampleFn = glTexStorage3DMultisample;
+	if( texStorage3DMultisampleFn && immutable )
+		texStorage3DMultisampleFn( target, samples, internalFormat, width, height, depth, fixedsamplelocations );
+	else {
+		glTexImage3DMultisample( target, samples, internalFormat, width, height, depth, fixedsamplelocations );
 	}	
 }
 
