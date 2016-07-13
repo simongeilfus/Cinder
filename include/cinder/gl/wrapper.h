@@ -348,22 +348,22 @@ void	framebufferRenderbuffer( const RenderbufferRef &renderbuffer, GLenum attach
 void	framebufferRenderbuffer( GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer );
 
 //! Attaches a \a level of a \a texture to a framebuffer object. Analogous to glFramebufferTexture() and emulated glFramebufferTexture2D() on ES 2 and 3.
-void	frameBufferTexture( const TextureBaseRef &texture, GLenum attachment, GLint level );
+void	framebufferTexture( const TextureBaseRef &texture, GLenum attachment, GLint level );
 #if ! defined( CINDER_GL_ES )
 //! Attaches a \a level of a \a texture to a framebuffer object. Analogous to glFramebufferTexture().
-void	frameBufferTexture( GLenum target, GLenum attachment, GLuint texture, GLint level );
+void	framebufferTexture( GLenum target, GLenum attachment, GLuint texture, GLint level );
 #endif
 //! Attaches a \a level of a \a texture to a framebuffer object. Analogous to glFramebufferTexture2d().
-void	frameBufferTexture2d( GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level );
+void	framebufferTexture2d( GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level );
 
 
 #if ! defined( CINDER_GL_ES_2 )
 //! Attaches a single \a layer of a \a texture3d to a framebuffer object. Analogous to glFramebufferTextureLayer().
-void	frameBufferTextureLayer( const Texture3dRef &texture, GLenum attachment, GLint level, GLint layer );
+void	framebufferTextureLayer( const Texture3dRef &texture, GLenum attachment, GLint level, GLint layer );
 //! Attaches a single \a layer of a \a textureCubeMap to a framebuffer object. Analogous to glFramebufferTextureLayer().
-void	frameBufferTextureLayer( const TextureCubeMapRef &texture, GLenum attachment, GLint level, GLint layer );
+void	framebufferTextureLayer( const TextureCubeMapRef &texture, GLenum attachment, GLint level, GLint layer );
 //! Attaches a single \a layer of a \a texture to a framebuffer object. Analogous to glFramebufferTextureLayer().
-void	frameBufferTextureLayer( GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer );
+void	framebufferTextureLayer( GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer );
 #endif
 
 //! Reads a block of pixels from the framebuffer. Analogous to glReadPixels().
