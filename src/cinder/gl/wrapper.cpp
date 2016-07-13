@@ -959,7 +959,7 @@ void framebufferRenderbuffer( GLenum target, GLenum attachment, GLenum renderbuf
 	glFramebufferRenderbuffer( target, attachment, renderbuffertarget, renderbuffer );
 }
 
-void frameBufferTexture( const TextureBaseRef &texture, GLenum attachment, GLint level )
+void framebufferTexture( const TextureBaseRef &texture, GLenum attachment, GLint level )
 {
 #if ! defined( CINDER_GL_ES )
 	glFramebufferTexture( GL_FRAMEBUFFER, attachment, texture->getId(), level );
