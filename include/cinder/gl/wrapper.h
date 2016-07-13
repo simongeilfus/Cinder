@@ -334,6 +334,8 @@ void	bindBuffer( GLenum target, GLuint buffer );
 void	readBuffer( GLenum src );
 //! Specifies an array of buffers into which fragment color values or fragment data will be written for subsequent draw calls. Analogous to glDrawBuffers().
 void	drawBuffers( GLsizei num, const GLenum *bufs );
+//! Specifies an array of buffers into which fragment color values or fragment data will be written for subsequent draw calls. Analogous to glDrawBuffers().
+void	drawBuffers( const std::vector<GLenum> &bufs );
 //! Specifies a color buffer as the destination for subsequent draw calls. Analogous to glDrawBuffer(), and emulated on ES 3
 void	drawBuffer( GLenum dst );
 #endif

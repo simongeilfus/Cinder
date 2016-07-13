@@ -938,6 +938,11 @@ void drawBuffers( GLsizei num, const GLenum *bufs )
 	context()->drawBuffers( num, bufs );
 }
 
+void drawBuffers( const std::vector<GLenum> &bufs )
+{
+	context()->drawBuffers( bufs.size(), &bufs[0] );
+}
+
 void drawBuffer( GLenum dst )
 {
 	context()->drawBuffer( dst );
