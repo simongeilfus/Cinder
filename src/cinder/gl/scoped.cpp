@@ -191,6 +191,28 @@ ScopedFramebuffer::~ScopedFramebuffer()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+// ScopedDrawBuffers
+ScopedDrawBuffers::ScopedDrawBuffers( GLenum buffer )
+	: mCtx( gl::context() )
+{
+	mCtx->pushDrawBuffer( buffer );
+}
+ScopedDrawBuffers::ScopedDrawBuffers( GLsizei num, const GLenum *buffers )
+	: mCtx( gl::context() )
+{
+	mCtx->pushDrawBuffers( num, buffers );
+}
+ScopedDrawBuffers::ScopedDrawBuffers( const std::vector<GLenum> &buffers )
+	: mCtx( gl::context() )
+{
+	mCtx->pushDrawBuffers( buffers.size(), &buffers[0] );
+}
+ScopedDrawBuffers::~ScopedDrawBuffers()
+{
+	mCtx->popDrawBuffers();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
 // ScopedActiveTexture
 ScopedActiveTexture::ScopedActiveTexture( uint8_t textureUnit )
 	: mCtx( gl::context() )

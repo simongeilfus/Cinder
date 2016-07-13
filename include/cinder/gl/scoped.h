@@ -133,6 +133,16 @@ struct ScopedFramebuffer : private Noncopyable {
 	GLenum		mTarget;
 };
 
+struct ScopedDrawBuffers : private Noncopyable {
+	ScopedDrawBuffers( GLenum buffer );
+	ScopedDrawBuffers( GLsizei num, const GLenum *buffers );
+	ScopedDrawBuffers( const std::vector<GLenum> &buffers );
+	~ScopedDrawBuffers();
+	
+  private:
+	Context		*mCtx;
+};
+
 struct ScopedActiveTexture : private Noncopyable {
 	//! Sets the currently active texture through glActiveTexture. Expects values relative to \c 0, \em not GL_TEXTURE0
 	ScopedActiveTexture( uint8_t textureUnit );
