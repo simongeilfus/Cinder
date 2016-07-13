@@ -50,6 +50,21 @@ EmptyFboApp::EmptyFboApp()
 
 	// check for erros
 	CI_CHECK_GL();
+
+	// need more work here:	
+	console() << "fbo->getAspectRatio()\t" << fbo->getAspectRatio() << endl;
+	console() << "fbo->getBounds()\t" << fbo->getBounds() << endl;
+	console() << "fbo->getColorTexture()\t" << fbo->getColorTexture() << endl;
+	console() << "fbo->getDepthTexture()\t" << fbo->getDepthTexture() << endl;
+	console() << "fbo->getFormat()\t" << fbo->getFormat().getLabel() << endl;
+	console() << "fbo->getHeight()\t" << fbo->getHeight() << endl;
+	console() << "fbo->getLabel()\t" << fbo->getLabel() << endl;
+	console() << "fbo->getMultisampleId()\t" << fbo->getMultisampleId() << endl;
+	console() << "fbo->getResolveId()\t" << fbo->getResolveId() << endl;
+	console() << "fbo->getSize()\t" << fbo->getSize() << endl;
+	console() << "fbo->getTexture2d()\t" << fbo->getTexture2d( GL_COLOR_ATTACHMENT0 ) << endl;
+	console() << "fbo->getTextureBase()\t" << fbo->getTextureBase( GL_COLOR_ATTACHMENT0 ) << endl;
+	console() << "fbo->getWidth()\t" << fbo->getWidth() << endl;
 }
 
 void EmptyFboApp::draw()
