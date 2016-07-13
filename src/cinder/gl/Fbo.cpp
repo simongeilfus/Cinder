@@ -276,6 +276,9 @@ FboRef Fbo::create( int width, int height, bool alpha, bool depth, bool stencil 
 Fbo::Fbo()
 	: mId( 0 ), mMultisampleFramebufferId( 0 )
 {
+	// allocate the framebuffer itself
+	glGenFramebuffers( 1, &mId );
+
 	gl::context()->framebufferCreated( this );
 }
 Fbo::Fbo( int width, int height, const Format &format )
