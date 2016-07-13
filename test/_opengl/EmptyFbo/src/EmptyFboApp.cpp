@@ -240,7 +240,7 @@ void EmptyFboApp::keyDown( KeyEvent event )
 			gl::ScopedFramebuffer scopedFbo( fbo0 );
 			gl::frameBufferTexture( colorBuffer, GL_COLOR_ATTACHMENT0, 0 );
 			gl::frameBufferTexture( depthBuffer, GL_DEPTH_ATTACHMENT, 0 );
-			if( ! gl::Fbo::checkStatus() ) console() << "INCOMPLETE!!!" << endl;
+			gl::Fbo::checkStatus();
 		
 			gl::clear();
 
