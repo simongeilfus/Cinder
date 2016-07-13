@@ -51,6 +51,8 @@ class EnvironmentEs : public Environment {
 	void	allocateTexStorage1d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, bool immutable, GLint texImageDataType ) override;
 	void	allocateTexStorage2d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable, GLint texImageDataType ) override;
 	void	allocateTexStorage3d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, bool immutable ) override;
+	void	allocateTexStorage2dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations, bool immutable, GLint texImageDataType ) override;
+	void	allocateTexStorage3dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations, bool immutable, GLint texImageDataType ) override;
 	void	allocateTexStorageCubeMap( GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable ) override;
 
 	std::string		generateVertexShader( const ShaderDef &shader ) override;
@@ -171,6 +173,30 @@ void EnvironmentEs::allocateTexStorage3d( GLenum target, GLsizei levels, GLenum 
 		glTexImage3D( target, 0, internalFormat, width, height, depth, 0, dataFormat, dataType, nullptr );
 	}
 #endif
+}
+
+void EnvironmentEs::allocateTexStorage2dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations, bool immutable, GLint texImageDataType )
+{
+	// Should be supported by ES 3.1 and ANGLE ES 3.1 (see GLES3/gl31.h)
+
+/*#if defined( CINDER_GL_ES_2 )
+	CI_LOG_E( "allocateTexStorage2dMultisample called on unsupported platform" );
+#else
+	// test at runtime for presence of 'glTexStorage2DMultisample'. Unfortunately the texImage equivalent don't exist on ES 3
+  	static auto texStorage2DMultisampleFn = glTexStorage2DMultisample;
+	if( immutable && texStorage2DMultisampleFn ) {
+		texStorage2DMultisampleFn( target, samples, internalFormat, width, height, fixedsamplelocations );
+	}
+	else {
+		CI_LOG_W( "glTexImage2dMultisample called on unsupported platform. Falling back to non-multisample allocation." );
+		allocateTexStorage2d( target, 0, internalFormat, width, height, immutable, texImageDataType );
+	}
+#endif*/
+}
+
+void EnvironmentEs::allocateTexStorage3dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations, bool immutable, GLint texImageDataType )
+{
+	CI_LOG_E( "allocateTexStorage3dMultisample called on unsupported platform" );
 }
 
 void EnvironmentEs::allocateTexStorageCubeMap( GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable )
