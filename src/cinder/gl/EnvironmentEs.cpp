@@ -52,10 +52,8 @@ class EnvironmentEs : public Environment {
 	void	objectLabel( GLenum identifier, GLuint name, GLsizei length, const char *label ) override;
 	
 	void	allocateTexStorage1d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, bool immutable, GLint texImageDataType ) override;
-	void	allocateTexStorage2d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable, GLint texImageDataType ) override;
-	void	allocateTexStorage3d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, bool immutable ) override;
-	void	allocateTexStorage2dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations, bool immutable, GLint texImageDataType ) override;
-	void	allocateTexStorage3dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations, bool immutable, GLint texImageDataType ) override;
+	void	allocateTexStorage2d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable, GLint texImageDataType, GLsizei samples, GLboolean fixedsamplelocations ) override;
+	void	allocateTexStorage3d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, bool immutable, GLsizei samples, GLboolean fixedsamplelocations ) override;
 	void	allocateTexStorageCubeMap( GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable ) override;
 
 	std::string		generateVertexShader( const ShaderDef &shader ) override;
@@ -145,7 +143,7 @@ void EnvironmentEs::allocateTexStorage1d( GLenum target, GLsizei levels, GLenum 
 	throw gl::Exception( "allocateTexStorage1d unimplemented on OpenGL ES" );
 }
 
-void EnvironmentEs::allocateTexStorage2d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable, GLint texImageDataType )
+void EnvironmentEs::allocateTexStorage2d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable, GLint texImageDataType, GLsizei samples, GLboolean fixedsamplelocations )
 {
 #if defined( CINDER_GL_ES_2 )
 	// test at runtime for presence of 'glTexStorage2D' and just force mutable storage if it's not available
@@ -170,7 +168,7 @@ void EnvironmentEs::allocateTexStorage2d( GLenum target, GLsizei levels, GLenum 
 	}
 }
 
-void EnvironmentEs::allocateTexStorage3d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, bool immutable )
+void EnvironmentEs::allocateTexStorage3d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, bool immutable, GLsizei samples, GLboolean fixedsamplelocations )
 {
 #if defined( CINDER_GL_ES_2 )
 	CI_LOG_E( "allocateTexStorage3d called on unsupported platform" );
@@ -192,12 +190,12 @@ void EnvironmentEs::allocateTexStorage3d( GLenum target, GLsizei levels, GLenum 
 	}
 #endif
 }
-
+/*
 void EnvironmentEs::allocateTexStorage2dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations, bool immutable, GLint texImageDataType )
 {
 	// Should be supported by ES 3.1 and ANGLE ES 3.1 (see GLES3/gl31.h)
 
-/*#if defined( CINDER_GL_ES_2 )
+#if defined( CINDER_GL_ES_2 )
 	CI_LOG_E( "allocateTexStorage2dMultisample called on unsupported platform" );
 #else
 	// test at runtime for presence of 'glTexStorage2DMultisample'. Unfortunately the texImage equivalent don't exist on ES 3
@@ -209,13 +207,13 @@ void EnvironmentEs::allocateTexStorage2dMultisample( GLenum target, GLsizei samp
 		CI_LOG_W( "glTexImage2dMultisample called on unsupported platform. Falling back to non-multisample allocation." );
 		allocateTexStorage2d( target, 0, internalFormat, width, height, immutable, texImageDataType );
 	}
-#endif*/
+#endif
 }
 
 void EnvironmentEs::allocateTexStorage3dMultisample( GLenum target, GLsizei samples, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLboolean fixedsamplelocations, bool immutable )
 {
 	CI_LOG_E( "allocateTexStorage3dMultisample called on unsupported platform" );
-}
+}*/
 
 void EnvironmentEs::allocateTexStorageCubeMap( GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable )
 {
