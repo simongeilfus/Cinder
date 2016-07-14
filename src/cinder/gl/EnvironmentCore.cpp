@@ -41,6 +41,9 @@ class EnvironmentCore : public Environment {
 	bool	isExtensionAvailable( const std::string &extName ) override;
 	bool	supportsHardwareVao() override;
 	bool	supportsTextureLod() const override;
+	bool	supportsTextureMultisample() const override;
+	bool	supportsTextureStorageMultisample() override;
+
 	void	objectLabel( GLenum identifier, GLuint name, GLsizei length, const char *label ) override;
 
 	void	allocateTexStorage1d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, bool immutable, GLint texImageDataType ) override;
@@ -101,6 +104,17 @@ bool EnvironmentCore::supportsHardwareVao()
 bool EnvironmentCore::supportsTextureLod() const
 {
 	return true;
+}
+
+bool EnvironmentCore::supportsTextureMultisample() const 
+{
+	return true;
+}
+
+bool EnvironmentCore::supportsTextureStorageMultisample()
+{
+	static bool result = isExtensionAvailable( "GL_ARB_texture_storage_multisample" );
+	return result;
 }
 
 void EnvironmentCore::objectLabel( GLenum identifier, GLuint name, GLsizei length, const char *label )

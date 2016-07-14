@@ -66,6 +66,10 @@ class Environment {
 	virtual bool			supportsHardwareVao() = 0;
 	//! Returns whether this platform supports Texture Level-of-Detail. \c true everywhere but ES 2, which requires \c GL_EXT_shader_texture_lod
 	virtual bool			supportsTextureLod() const = 0;
+	//! Returns whether this platform support Texture Multisample. Supported on desktop since GL 3.2 via GL_ARB_texture_multisample
+	virtual bool			supportsTextureMultisample() const = 0;
+	//! Returns whether this platform support Texture Storage Multisample. Supported on desktop since GL 4.3 and (in 2D only) since ES 3.1 via GL_ARB_texture_storage_multisample
+	virtual bool			supportsTextureStorageMultisample() = 0;
 
 	virtual void			allocateTexStorage1d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, bool immutable, GLint texImageDataType ) = 0;
 	virtual void			allocateTexStorage2d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable, GLint texImageDataType ) = 0;

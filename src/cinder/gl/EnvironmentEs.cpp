@@ -46,6 +46,9 @@ class EnvironmentEs : public Environment {
 	bool	isExtensionAvailable( const std::string &extName ) override;
 	bool	supportsHardwareVao() override;
 	bool	supportsTextureLod() const override;
+	bool	supportsTextureMultisample() const override;
+	bool	supportsTextureStorageMultisample() override;
+
 	void	objectLabel( GLenum identifier, GLuint name, GLsizei length, const char *label ) override;
 	
 	void	allocateTexStorage1d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, bool immutable, GLint texImageDataType ) override;
@@ -111,6 +114,21 @@ bool EnvironmentEs::supportsTextureLod() const
 	return true;
 #else
 	static bool result = isExtensionAvailable( "GL_EXT_shader_texture_lod" );
+	return result;
+#endif
+}
+
+bool EnvironmentEs::supportsTextureMultisample() const 
+{
+	return false;
+}
+
+bool EnvironmentEs::supportsTextureStorageMultisample()
+{
+#if defined( CINDER_GL_ES_2 )
+	return false;
+#else
+	static bool result = isExtensionAvailable( "GL_ARB_texture_storage_multisample" );
 	return result;
 #endif
 }
