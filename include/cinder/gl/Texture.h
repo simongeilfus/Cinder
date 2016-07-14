@@ -250,7 +250,7 @@ class TextureBase {
 		
 #if ! defined( CINDER_GL_ES )
 		//! Returns the number of samples in the multisample texture's image. 
-		GLsizei getNumSamples() const { return mSamples; }
+		GLsizei getSamples() const { return mSamples; }
 		//! Returns whether the image will use identical sample locations and the same number of samples for all texels in the image.
 		bool	hasFixedSampleLocations() const { return mFixedSampleLocations; }
 #endif

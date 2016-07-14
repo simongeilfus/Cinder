@@ -890,7 +890,7 @@ Texture2d::Texture2d( int width, int height, Format format )
 	glGenTextures( 1, &mTextureId );
 
 #if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE ) || defined( CINDER_GL_HAS_TEXTURE_2D_STORAGE_MULTISAMPLE )
-	if( format.getNumSamples() ) {
+	if( format.getSamples() ) {
 		if( format.getTarget() == GL_TEXTURE_2D ) {
 			format.setTarget( GL_TEXTURE_2D_MULTISAMPLE );
 		}
@@ -921,7 +921,7 @@ Texture2d::Texture2d( int width, int height, Format format )
 #else
 	initMaxMipmapLevel();
 #endif
-	env()->allocateTexStorage2d( mTarget, mMaxMipmapLevel + 1, mInternalFormat, width, height, format.isImmutableStorage(), format.getDataType(), format.getNumSamples(), format.hasFixedSampleLocations() );
+	env()->allocateTexStorage2d( mTarget, mMaxMipmapLevel + 1, mInternalFormat, width, height, format.isImmutableStorage(), format.getDataType(), format.getSamples(), format.hasFixedSampleLocations() );
 }
 
 Texture2d::Texture2d( const void *data, GLenum dataFormat, int width, int height, Format format )
@@ -1665,7 +1665,7 @@ Texture3d::Texture3d( GLint width, GLint height, GLint depth, Format format )
 	glGenTextures( 1, &mTextureId );
 	
 #if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE ) || defined( CINDER_GL_HAS_TEXTURE_3D_STORAGE_MULTISAMPLE )
-	if( format.getNumSamples() ) {
+	if( format.getSamples() ) {
 		if( format.getTarget() == GL_TEXTURE_2D_ARRAY || format.getTarget() == GL_TEXTURE_2D_MULTISAMPLE_ARRAY ) {
 			format.setTarget( GL_TEXTURE_2D_MULTISAMPLE_ARRAY );
 		}
@@ -1685,7 +1685,7 @@ Texture3d::Texture3d( GLint width, GLint height, GLint depth, Format format )
 		glTexParameteri( GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAX_LEVEL, 0 ); 
 	}
 #endif
-	env()->allocateTexStorage3d( mTarget, format.mMaxMipmapLevel + 1, mInternalFormat, mWidth, mHeight, mDepth, format.isImmutableStorage(), format.getNumSamples(), format.hasFixedSampleLocations() );
+	env()->allocateTexStorage3d( mTarget, format.mMaxMipmapLevel + 1, mInternalFormat, mWidth, mHeight, mDepth, format.isImmutableStorage(), format.getSamples(), format.hasFixedSampleLocations() );
 }
 
 Texture3d::Texture3d( const void *data, GLenum dataFormat, int width, int height, int depth, Format format )
