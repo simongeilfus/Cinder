@@ -888,7 +888,8 @@ Texture2d::Texture2d( int width, int height, Format format )
 	mTopDown( false )
 {
 	glGenTextures( 1, &mTextureId );
-	
+
+#if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE ) || defined( CINDER_GL_HAS_TEXTURE_2D_STORAGE_MULTISAMPLE )
 	if( format.getNumSamples() ) {
 		if( format.getTarget() == GL_TEXTURE_2D ) {
 			format.setTarget( GL_TEXTURE_2D_MULTISAMPLE );
@@ -898,6 +899,7 @@ Texture2d::Texture2d( int width, int height, Format format )
 			format.setSamples( 0 );
 		}
 	}
+#endif
 
 	mTarget = format.getTarget();
 	ScopedTextureBind texBindScope( mTarget, mTextureId );
@@ -907,13 +909,18 @@ Texture2d::Texture2d( int width, int height, Format format )
 #else
 	initParams( format, GL_RGBA, GL_UNSIGNED_BYTE );
 #endif
-
+	
+#if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE ) || defined( CINDER_GL_HAS_TEXTURE_2D_STORAGE_MULTISAMPLE )
 	if( mTarget == GL_TEXTURE_2D_MULTISAMPLE ) {
 		glTexParameteri( GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAX_LEVEL, 0 ); 
 	}
 	else {
 		initMaxMipmapLevel();
+
 	}
+#else
+	initMaxMipmapLevel();
+#endif
 	env()->allocateTexStorage2d( mTarget, mMaxMipmapLevel + 1, mInternalFormat, width, height, format.isImmutableStorage(), format.getDataType(), format.getNumSamples(), format.hasFixedSampleLocations() );
 }
 
@@ -1657,6 +1664,7 @@ Texture3d::Texture3d( GLint width, GLint height, GLint depth, Format format )
 {
 	glGenTextures( 1, &mTextureId );
 	
+#if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE ) || defined( CINDER_GL_HAS_TEXTURE_3D_STORAGE_MULTISAMPLE )
 	if( format.getNumSamples() ) {
 		if( format.getTarget() == GL_TEXTURE_2D_ARRAY || format.getTarget() == GL_TEXTURE_2D_MULTISAMPLE_ARRAY ) {
 			format.setTarget( GL_TEXTURE_2D_MULTISAMPLE_ARRAY );
@@ -1666,14 +1674,17 @@ Texture3d::Texture3d( GLint width, GLint height, GLint depth, Format format )
 			format.setSamples( 0 );
 		}
 	}
+#endif
 
 	mTarget = format.getTarget();
 	ScopedTextureBind texBindScope( mTarget, mTextureId );
 	TextureBase::initParams( format, GL_RGB, GL_UNSIGNED_BYTE );
 	
+#if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE ) || defined( CINDER_GL_HAS_TEXTURE_3D_STORAGE_MULTISAMPLE )
 	if( mTarget == GL_TEXTURE_2D_MULTISAMPLE_ARRAY ) {
 		glTexParameteri( GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAX_LEVEL, 0 ); 
 	}
+#endif
 	env()->allocateTexStorage3d( mTarget, format.mMaxMipmapLevel + 1, mInternalFormat, mWidth, mHeight, mDepth, format.isImmutableStorage(), format.getNumSamples(), format.hasFixedSampleLocations() );
 }
 
