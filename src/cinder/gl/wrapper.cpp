@@ -1036,6 +1036,30 @@ GLint getMaxSamples()
 	return 0;
 #endif
 }
+GLint getMaxColorTextureSamples()
+{
+#if ! defined( CINDER_GL_ES )
+	static GLint sMaxSamples = -1;
+	if( sMaxSamples < 0 ) {
+		glGetIntegerv( GL_MAX_COLOR_TEXTURE_SAMPLES, &sMaxSamples);
+	}
+	return sMaxSamples;
+#else
+	return 0;
+#endif
+}
+GLint getMaxDepthTextureSamples()
+{
+#if ! defined( CINDER_GL_ES )
+	static GLint sMaxSamples = -1;
+	if( sMaxSamples < 0 ) {
+		glGetIntegerv( GL_MAX_DEPTH_TEXTURE_SAMPLES, &sMaxSamples);
+	}
+	return sMaxSamples;
+#else
+	return 0;
+#endif
+}
 
 // Compute
 #if defined( CINDER_MSW ) && ! defined( CINDER_GL_ANGLE )

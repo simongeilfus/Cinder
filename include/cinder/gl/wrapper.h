@@ -369,8 +369,12 @@ void	framebufferTextureLayer( GLenum target, GLenum attachment, GLuint texture, 
 //! Reads a block of pixels from the framebuffer. Analogous to glReadPixels().
 void	readPixels( GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *data );
 
-//! Returns the maximum number of samples the graphics card is capable of using per pixel in MSAA for an Fbo or a TextureMultisample 
+//! Returns the maximum number of samples the graphics card is capable of using per pixel in MSAA for an Fbo
 GLint	getMaxSamples();
+//! Returns the maximum number of samples the graphics card is capable of using per pixel in MSAA for a color TextureMultisample 
+GLint	getMaxColorTextureSamples();
+//! Returns the maximum number of samples the graphics card is capable of using per pixel in MSAA for a depth TextureMultisample 
+GLint	getMaxDepthTextureSamples();
 
 // Compute
 #if defined( CINDER_MSW ) && ! defined( CINDER_GL_ANGLE )
