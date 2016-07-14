@@ -104,28 +104,28 @@ TextureBase::~TextureBase()
 void TextureBase::initParams( Format &format, GLint defaultInternalFormat, GLint defaultDataType )
 {
 	// default is GL_REPEAT
-	if( format.mWrapS != GL_REPEAT && format.mSamples <= 1 )
+	if( format.mWrapS != GL_REPEAT && ! format.mSamples )
 		glTexParameteri( mTarget, GL_TEXTURE_WRAP_S, format.mWrapS );
 	// default is GL_REPEAT
-	if( format.mWrapT != GL_REPEAT && format.mSamples <= 1 )
+	if( format.mWrapT != GL_REPEAT && ! format.mSamples )
 		glTexParameteri( mTarget, GL_TEXTURE_WRAP_T, format.mWrapT );
 #if ! defined( CINDER_GL_ES_2 )
 	// default is GL_REPEAT
-	if( format.mWrapR != GL_REPEAT && format.mSamples <= 1 )
+	if( format.mWrapR != GL_REPEAT && ! format.mSamples )
 		glTexParameteri( mTarget, GL_TEXTURE_WRAP_R, format.mWrapR );
 #endif // ! defined( CINDER_GL_ES )
 
-	if( format.mMipmapping && ! format.mMinFilterSpecified && format.mSamples <= 1 )
+	if( format.mMipmapping && ! format.mMinFilterSpecified && ! format.mSamples )
 		format.mMinFilter = GL_LINEAR_MIPMAP_LINEAR;
 	// default is GL_NEAREST_MIPMAP_LINEAR
-	if( format.mMinFilter != GL_NEAREST_MIPMAP_LINEAR && format.mSamples <= 1 )
+	if( format.mMinFilter != GL_NEAREST_MIPMAP_LINEAR && ! format.mSamples )
 		glTexParameteri( mTarget, GL_TEXTURE_MIN_FILTER, format.mMinFilter );
 
 	// default is GL_LINEAR
-	if( format.mMagFilter != GL_LINEAR && format.mSamples <= 1 )
+	if( format.mMagFilter != GL_LINEAR && ! format.mSamples )
 		glTexParameteri( mTarget, GL_TEXTURE_MAG_FILTER, format.mMagFilter );
 	
-	if( format.mMaxAnisotropy > 1.0f && format.mSamples <= 1 )
+	if( format.mMaxAnisotropy > 1.0f && ! format.mSamples )
 		glTexParameterf( mTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT, format.mMaxAnisotropy );
 
 	if( format.mInternalFormat == -1 )
@@ -154,10 +154,10 @@ void TextureBase::initParams( Format &format, GLint defaultInternalFormat, GLint
 #endif
 // Compare Mode and Func for Depth Texture
 #if ! defined( CINDER_GL_ES_2 )
-	if( format.mCompareMode > -1 && format.mSamples <= 1 ) {
+	if( format.mCompareMode > -1 && ! format.mSamples ) {
 		glTexParameteri( mTarget, GL_TEXTURE_COMPARE_MODE, format.mCompareMode );
 	}
-	if( format.mCompareFunc > -1 && format.mSamples <= 1 ) {
+	if( format.mCompareFunc > -1 && ! format.mSamples ) {
 		glTexParameteri( mTarget, GL_TEXTURE_COMPARE_FUNC, format.mCompareFunc );
 	}
 #else
@@ -181,7 +181,7 @@ void TextureBase::initParams( Format &format, GLint defaultInternalFormat, GLint
 	mSwizzleMask = format.mSwizzleMask;
 	
 	mMipmapping = format.mMipmapping;
-	if( mMipmapping && format.mSamples <= 1 ) {
+	if( mMipmapping && ! format.mSamples ) {
 		mBaseMipmapLevel = format.mBaseMipmapLevel;
 		mMaxMipmapLevel = format.mMaxMipmapLevel;
 #if ! defined( CINDER_GL_ES_2 )
@@ -195,7 +195,7 @@ void TextureBase::initParams( Format &format, GLint defaultInternalFormat, GLint
 	}
 
 #if ! defined( CINDER_GL_ES )
-	if( format.mBorderSpecified && format.mSamples <= 1 ) {
+	if( format.mBorderSpecified && ! format.mSamples ) {
 		glTexParameterfv( mTarget, GL_TEXTURE_BORDER_COLOR, format.mBorderColor.data() );
 	}
 #endif
@@ -654,7 +654,7 @@ TextureBase::Format::Format()
 	mMinFilterSpecified = false;
 	mMinFilter = GL_LINEAR;
 	mMagFilter = GL_LINEAR;
-	mSamples = 1;
+	mSamples = 0;
 	mFixedSampleLocations = false;
 	mMipmapping = false;
 	mMipmappingSpecified = false;
@@ -889,7 +889,7 @@ Texture2d::Texture2d( int width, int height, Format format )
 {
 	glGenTextures( 1, &mTextureId );
 	
-	if( format.getNumSamples() > 1 ) {
+	if( format.getNumSamples() ) {
 		if( format.getTarget() == GL_TEXTURE_RECTANGLE ) {
 			CI_LOG_W( "Multisampling is not supported on GL_TEXTURE_RECTANGLE" );
 		}
@@ -1656,7 +1656,7 @@ Texture3d::Texture3d( GLint width, GLint height, GLint depth, Format format )
 {
 	glGenTextures( 1, &mTextureId );
 	
-	if( format.getNumSamples() > 1 ) {
+	if( format.getNumSamples() ) {
 		if( format.getTarget() == GL_TEXTURE_3D ) {
 			CI_LOG_W( "Multisampling is not supported on GL_TEXTURE_3D" );
 		}
@@ -1669,7 +1669,7 @@ Texture3d::Texture3d( GLint width, GLint height, GLint depth, Format format )
 	ScopedTextureBind texBindScope( mTarget, mTextureId );
 	TextureBase::initParams( format, GL_RGB, GL_UNSIGNED_BYTE );
 	
-	if( format.getNumSamples() > 1 ) {
+	if( mTarget == GL_TEXTURE_2D_MULTISAMPLE_ARRAY ) {
 		env()->allocateTexStorage3dMultisample( mTarget, format.getNumSamples(), mInternalFormat, mWidth, mHeight, mDepth, format.hasFixedSampleLocations(), format.isImmutableStorage() );
 	}
 	else {
