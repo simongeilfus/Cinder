@@ -69,9 +69,12 @@
 	#define CINDER_GL_HAS_DRAW_INSTANCED
 	#define CINDER_GL_HAS_FBO_MULTISAMPLING
 	#define CINDER_GL_HAS_TRANSFORM_FEEDBACK
+	#define CINDER_GL_HAS_TEXTURE_MULTISAMPLE
 	#if ! defined( CINDER_GL_ES_3 ) // Desktop Only
 		#define CINDER_GL_HAS_GEOM_SHADER
 		#define CINDER_GL_HAS_TESS_SHADER
+	#elif defined( CINDER_GL_ES_3 ) // ES 3 Only
+		#define CINDER_GL_HAS_TEXTURE_2D_STORAGE_MULTISAMPLE
 	#endif // ! defined( CINDER_GL_ES_3 )
 #endif // ! defined( CINDER_GL_ES_2 )
 
@@ -79,6 +82,8 @@
 	#if ! defined( CINDER_GL_ANGLE ) // MSW Desktop Only
 		#define CINDER_GL_HAS_COMPUTE_SHADER
 		#define CINDER_GL_HAS_DEBUG_OUTPUT
+		#define CINDER_GL_HAS_TEXTURE_2D_STORAGE_MULTISAMPLE
+		#define CINDER_GL_HAS_TEXTURE_3D_STORAGE_MULTISAMPLE
 	#endif
 	// both ANGLE and desktop have FBO Multisampling
 	#define CINDER_GL_HAS_FBO_MULTISAMPLING
