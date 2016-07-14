@@ -168,7 +168,7 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
 	void		blitFromScreen( const Area &srcArea, const Area &dstArea, GLenum filter = GL_NEAREST, GLbitfield mask = GL_COLOR_BUFFER_BIT );
 #endif
 	
-	//! DEPRECATED (Use gl::getMaxSamples instead) Returns the maximum number of samples the graphics card is capable of using per pixel in MSAA for an Fbo
+	//! Returns the maximum number of samples the graphics card is capable of using per pixel in MSAA for an Fbo
 	static GLint	getMaxSamples();
 	//! Returns the maximum number of color attachments the graphics card is capable of using for an Fbo
 	static GLint	getMaxAttachments();
@@ -309,7 +309,7 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
 
 	mutable bool		mNeedsResolve, mNeedsMipmapUpdate;
 	
-	static GLint		sMaxAttachments;
+	static GLint		sMaxSamples, sMaxAttachments;
 	
 	friend std::ostream& operator<<( std::ostream &os, const Fbo &rhs );
 };

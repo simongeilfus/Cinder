@@ -54,6 +54,7 @@ using namespace std;
 namespace cinder {
 namespace gl {
 
+GLint Fbo::sMaxSamples = -1;
 GLint Fbo::sMaxAttachments = -1;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -762,10 +763,22 @@ bool Fbo::checkStatus( FboExceptionInvalidSpecification *resultExc )
     return true;
 }
 
-// DEPRECATED
-GLint Fbo::getMaxSamples() 
-{ 
-	return gl::getMaxSamples(); 
+GLint Fbo::getMaxSamples()
+{
+#if ! defined( CINDER_GL_ES_2 )
+	if( sMaxSamples < 0 ) {
+		glGetIntegerv( GL_MAX_SAMPLES, &sMaxSamples);
+	}
+	
+	return sMaxSamples;
+#elif defined( CINDER_COCOA_TOUCH )
+	if( sMaxSamples < 0 )
+		glGetIntegerv( GL_MAX_SAMPLES_APPLE, &sMaxSamples);
+	
+	return sMaxSamples;
+#else
+	return 0;
+#endif
 }
 
 GLint Fbo::getMaxAttachments()
