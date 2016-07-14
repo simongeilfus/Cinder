@@ -24,6 +24,7 @@
 
 #include "cinder/gl/platform.h"
 #include "cinder/gl/Environment.h"
+#include "cinder/gl/ConstantConversions.h"
 #include "cinder/Log.h"
 
 #if defined( CINDER_GL_ES )
@@ -145,26 +146,44 @@ void EnvironmentEs::allocateTexStorage1d( GLenum target, GLsizei levels, GLenum 
 
 void EnvironmentEs::allocateTexStorage2d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable, GLint texImageDataType, GLsizei samples, GLboolean fixedsamplelocations )
 {
-#if defined( CINDER_GL_ES_2 )
-	// test at runtime for presence of 'glTexStorage2D' and just force mutable storage if it's not available
-	// both ANGLE and iOS support EXT_texture_storage
-	static auto texStorage2DFn = glTexStorage2DEXT;
-#else
-	static auto texStorage2DFn = glTexStorage2D;
-#endif
-	if( immutable && texStorage2DFn ) {
-		texStorage2DFn( target, levels, internalFormat, width, height );
+	if( !samples ) {
+	#if defined( CINDER_GL_ES_2 )
+		// test at runtime for presence of 'glTexStorage2D' and just force mutable storage if it's not available
+		// both ANGLE and iOS support EXT_texture_storage
+		static auto texStorage2DFn = glTexStorage2DEXT;
+	#else
+		static auto texStorage2DFn = glTexStorage2D;
+	#endif
+		if( immutable && texStorage2DFn ) {
+			texStorage2DFn( target, levels, internalFormat, width, height );
+		}
+		else {
+			GLenum dataFormat, dataType;
+			TextureBase::getInternalFormatInfo( internalFormat, &dataFormat, &dataType );
+			if( texImageDataType != -1 )
+				dataType = texImageDataType;
+	// on ES 2 non-sized formats are required for internalFormat
+	#if defined( CINDER_GL_ES_2 )
+			internalFormat = dataFormat;
+	#endif
+			glTexImage2D( target, 0, internalFormat, width, height, 0, dataFormat, dataType, nullptr );
+		}
 	}
 	else {
-		GLenum dataFormat, dataType;
-		TextureBase::getInternalFormatInfo( internalFormat, &dataFormat, &dataType );
-		if( texImageDataType != -1 )
-			dataType = texImageDataType;
-// on ES 2 non-sized formats are required for internalFormat
-#if defined( CINDER_GL_ES_2 )
-		internalFormat = dataFormat;
+#if defined( CINDER_GL_HAS_TEXTURE_2D_STORAGE_MULTISAMPLE )
+		if( target != GL_TEXTURE_2D_MULTISAMPLE && target != GL_PROXY_TEXTURE_2D_MULTISAMPLE )
+			throw gl::Exception( "multisampling not supported on this format: " + gl::constantToString( target ) );
+		
+		if( ! immutable )
+			throw gl::Exception( "multisample textures have to be immutable on this platform" );
+		else {		
+			static auto texStorage2DMultisampleFn = glTexStorage2DMultisample;
+			if( supportsTextureStorageMultisample() && texStorage2DMultisampleFn && immutable ) 
+				texStorage2DMultisampleFn( target, samples, internalFormat, width, height, fixedsamplelocations );
+		}
+#else
+		throw gl::Exception( "multisample textures not supported on this platform" );
 #endif
-		glTexImage2D( target, 0, internalFormat, width, height, 0, dataFormat, dataType, nullptr );
 	}
 }
 

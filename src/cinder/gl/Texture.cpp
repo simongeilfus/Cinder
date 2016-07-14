@@ -890,11 +890,12 @@ Texture2d::Texture2d( int width, int height, Format format )
 	glGenTextures( 1, &mTextureId );
 	
 	if( format.getNumSamples() ) {
-		if( format.getTarget() == GL_TEXTURE_RECTANGLE ) {
-			CI_LOG_W( "Multisampling is not supported on GL_TEXTURE_RECTANGLE" );
-		}
-		else if( format.getTarget() == GL_TEXTURE_2D ) {
+		if( format.getTarget() == GL_TEXTURE_2D ) {
 			format.setTarget( GL_TEXTURE_2D_MULTISAMPLE );
+		}
+		else {
+			CI_LOG_W( "Multisampling is only supported on GL_TEXTURE_2D and GL_TEXTURE_2D_ARRAY" );
+			format.setSamples( 0 );
 		}
 	}
 
@@ -906,14 +907,14 @@ Texture2d::Texture2d( int width, int height, Format format )
 #else
 	initParams( format, GL_RGBA, GL_UNSIGNED_BYTE );
 #endif
+
 	if( mTarget == GL_TEXTURE_2D_MULTISAMPLE ) {
 		glTexParameteri( GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAX_LEVEL, 0 ); 
-		env()->allocateTexStorage2dMultisample( mTarget, format.getNumSamples(), mInternalFormat, width, height, format.hasFixedSampleLocations(), format.isImmutableStorage(), format.getDataType() );
 	}
 	else {
 		initMaxMipmapLevel();
-		env()->allocateTexStorage2d( mTarget, mMaxMipmapLevel + 1, mInternalFormat, width, height, format.isImmutableStorage(), format.getDataType() );
 	}
+	env()->allocateTexStorage2d( mTarget, mMaxMipmapLevel + 1, mInternalFormat, width, height, format.isImmutableStorage(), format.getDataType(), format.getNumSamples(), format.hasFixedSampleLocations() );
 }
 
 Texture2d::Texture2d( const void *data, GLenum dataFormat, int width, int height, Format format )
@@ -1657,11 +1658,12 @@ Texture3d::Texture3d( GLint width, GLint height, GLint depth, Format format )
 	glGenTextures( 1, &mTextureId );
 	
 	if( format.getNumSamples() ) {
-		if( format.getTarget() == GL_TEXTURE_3D ) {
-			CI_LOG_W( "Multisampling is not supported on GL_TEXTURE_3D" );
-		}
-		else if( format.getTarget() == GL_TEXTURE_2D_ARRAY || format.getTarget() == GL_TEXTURE_2D_MULTISAMPLE_ARRAY ) {
+		if( format.getTarget() == GL_TEXTURE_2D_ARRAY || format.getTarget() == GL_TEXTURE_2D_MULTISAMPLE_ARRAY ) {
 			format.setTarget( GL_TEXTURE_2D_MULTISAMPLE_ARRAY );
+		}
+		else {
+			CI_LOG_W( "Multisampling is only supported on GL_TEXTURE_2D and GL_TEXTURE_2D_ARRAY" );
+			format.setSamples( 0 );
 		}
 	}
 
@@ -1670,11 +1672,9 @@ Texture3d::Texture3d( GLint width, GLint height, GLint depth, Format format )
 	TextureBase::initParams( format, GL_RGB, GL_UNSIGNED_BYTE );
 	
 	if( mTarget == GL_TEXTURE_2D_MULTISAMPLE_ARRAY ) {
-		env()->allocateTexStorage3dMultisample( mTarget, format.getNumSamples(), mInternalFormat, mWidth, mHeight, mDepth, format.hasFixedSampleLocations(), format.isImmutableStorage() );
+		glTexParameteri( GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAX_LEVEL, 0 ); 
 	}
-	else {
-		env()->allocateTexStorage3d( mTarget, format.mMaxMipmapLevel + 1, mInternalFormat, mWidth, mHeight, mDepth, format.isImmutableStorage() );
-	}
+	env()->allocateTexStorage3d( mTarget, format.mMaxMipmapLevel + 1, mInternalFormat, mWidth, mHeight, mDepth, format.isImmutableStorage(), format.getNumSamples(), format.hasFixedSampleLocations() );
 }
 
 Texture3d::Texture3d( const void *data, GLenum dataFormat, int width, int height, int depth, Format format )
