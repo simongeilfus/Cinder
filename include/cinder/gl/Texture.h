@@ -676,7 +676,7 @@ class Texture3d : public TextureBase {
 		Format& minFilter( GLenum minFilter ) { setMinFilter( minFilter ); return *this; }
 		Format& magFilter( GLenum magFilter ) { setMagFilter( magFilter ); return *this; }
 #if ! defined( CINDER_GL_ES_2 )
-		//! Specifies the number of samples in the multisample texture's image. Only supported with a GL_TEXTURE_2D_ARRAY format.
+		//! Specifies the number of samples in the multisample texture's image. Only supported with a GL_TEXTURE_2D_ARRAY target.
 		Format& samples( GLsizei numSamples, bool fixedSampleLocations = false ){ setSamples( numSamples, fixedSampleLocations ); return *this; }
 #endif
 		//! Sets whether the storage for the cannot be changed in the future (making glTexImage3D() calls illegal). More efficient when possible. Default is \c false.
