@@ -1643,6 +1643,9 @@ ImageSourceRef Texture2d::createSource()
 #if ! defined( CINDER_GL_ES_2 )
 /////////////////////////////////////////////////////////////////////////////////
 // Texture3d
+
+GLint Texture3d::sMaxDepth = -1;
+
 Texture3dRef Texture3d::create( GLint width, GLint height, GLint depth, const Format &format )
 {
 	if( format.mDeleter )
@@ -1716,6 +1719,14 @@ void Texture3d::update( const void *data, GLenum dataFormat, GLenum dataType, in
 {
 	ScopedTextureBind tbs( mTarget, mTextureId );
 	glTexSubImage3D( mTarget, mipLevel, xOffset, yOffset, zOffset, width, height, depth, dataFormat, dataType, data );
+}
+
+GLint Texture3d::getMaxDepth()
+{
+	if( sMaxDepth == -1 ) {
+		glGetIntegerv( GL_MAX_3D_TEXTURE_SIZE, &sMaxDepth );
+	}
+	return sMaxDepth;
 }
 
 void Texture3d::printDims( std::ostream &os ) const

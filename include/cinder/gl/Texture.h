@@ -709,6 +709,9 @@ class Texture3d : public TextureBase {
 	//! Returns the depth of the texture, which is the number of images in a texture array, or the depth of a 3D texture measured in pixels
 	GLint			getDepth() const override { return mDepth; }
 
+	//! Returns the maximum depth of a 3D texture, which is the maximum number of images in a texture array, or the maximum depth of a 3D texture measured in pixels
+	static GLint	getMaxDepth();
+
   protected:
   	Texture3d( GLint width, GLint height, GLint depth, Format format );
 	Texture3d( const void *data, GLenum dataFormat, int width, int height, int depth, Format format );
@@ -716,6 +719,7 @@ class Texture3d : public TextureBase {
 	void	printDims( std::ostream &os ) const override;
 
 	GLint		mWidth, mHeight, mDepth;
+	static GLint sMaxDepth;
 };
 #endif // ! defined( CINDER_GL_ES_2 )
 
