@@ -1645,6 +1645,7 @@ ImageSourceRef Texture2d::createSource()
 // Texture3d
 
 GLint Texture3d::sMaxDepth = -1;
+GLint Texture3d::sMaxLayers = -1;
 
 Texture3dRef Texture3d::create( GLint width, GLint height, GLint depth, const Format &format )
 {
