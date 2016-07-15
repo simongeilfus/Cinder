@@ -1729,6 +1729,14 @@ GLint Texture3d::getMaxDepth()
 	return sMaxDepth;
 }
 
+GLint Texture3d::getMaxLayers()
+{
+	if( sMaxLayers == -1 ) {
+		glGetIntegerv( GL_MAX_ARRAY_TEXTURE_LAYERS, &sMaxLayers );
+	}
+	return sMaxLayers;
+}
+
 void Texture3d::printDims( std::ostream &os ) const
 {
 	os << mWidth << " x " << mHeight << " x " << mDepth;
