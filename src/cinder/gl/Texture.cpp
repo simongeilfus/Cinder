@@ -895,7 +895,7 @@ Texture2d::Texture2d( int width, int height, Format format )
 			format.setTarget( GL_TEXTURE_2D_MULTISAMPLE );
 		}
 		else {
-			CI_LOG_W( "Multisampling is only supported on GL_TEXTURE_2D and GL_TEXTURE_2D_ARRAY" );
+			CI_LOG_E( "Multisampling is only supported on GL_TEXTURE_2D and GL_TEXTURE_2D_ARRAY" );
 			format.setSamples( 0 );
 		}
 	}
@@ -1670,7 +1670,7 @@ Texture3d::Texture3d( GLint width, GLint height, GLint depth, Format format )
 			format.setTarget( GL_TEXTURE_2D_MULTISAMPLE_ARRAY );
 		}
 		else {
-			CI_LOG_W( "Multisampling is only supported on GL_TEXTURE_2D and GL_TEXTURE_2D_ARRAY" );
+			CI_LOG_E( "Multisampling is only supported on GL_TEXTURE_2D and GL_TEXTURE_2D_ARRAY" );
 			format.setSamples( 0 );
 		}
 	}
