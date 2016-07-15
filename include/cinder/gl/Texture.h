@@ -214,7 +214,7 @@ class TextureBase {
 		//! Sets the anisotropic filter amount. A value greater than 1.0 "enables" anisotropic filtering. Maximum of getMaxAnisotropyMax();
 		void    setMaxAnisotropy( GLfloat maxAnisotropy ) { mMaxAnisotropy = maxAnisotropy; }
 		
-#if ! defined( CINDER_GL_ES )
+#if ! defined( CINDER_GL_ES_2 )
 		//! Sets the number of samples in the multisample texture's image and whether the image will use identical sample locations and the same number of samples for all texels in the image.
 		void setSamples( GLsizei numSamples, bool fixedSampleLocations = false ) { mSamples = numSamples; mFixedSampleLocations = fixedSampleLocations; }
 #endif
@@ -248,7 +248,7 @@ class TextureBase {
 		//! Returns the texture anisotropic filtering amount
 		GLfloat getMaxAnisotropy() const { return mMaxAnisotropy; }
 		
-#if ! defined( CINDER_GL_ES )
+#if ! defined( CINDER_GL_ES_2 )
 		//! Returns the number of samples in the multisample texture's image. 
 		GLsizei getSamples() const { return mSamples; }
 		//! Returns whether the image will use identical sample locations and the same number of samples for all texels in the image.
@@ -501,7 +501,7 @@ class Texture2d : public TextureBase {
 		Format& minFilter( GLenum minFilter ) { setMinFilter( minFilter ); return *this; }
 		Format& magFilter( GLenum magFilter ) { setMagFilter( magFilter ); return *this; }
 		
-#if ! defined( CINDER_GL_ES )
+#if ! defined( CINDER_GL_ES_2 )
 		//! Specifies the number of samples in the multisample texture's image. 
 		Format& samples( GLsizei numSamples, bool fixedSampleLocations = false ){ setSamples( numSamples, fixedSampleLocations ); return *this; }
 #endif
@@ -675,8 +675,8 @@ class Texture3d : public TextureBase {
 #endif
 		Format& minFilter( GLenum minFilter ) { setMinFilter( minFilter ); return *this; }
 		Format& magFilter( GLenum magFilter ) { setMagFilter( magFilter ); return *this; }
-#if ! defined( CINDER_GL_ES )
-		//! Specifies the number of samples in the multisample texture's image. 
+#if ! defined( CINDER_GL_ES_2 )
+		//! Specifies the number of samples in the multisample texture's image. Only supported with a GL_TEXTURE_2D_ARRAY format.
 		Format& samples( GLsizei numSamples, bool fixedSampleLocations = false ){ setSamples( numSamples, fixedSampleLocations ); return *this; }
 #endif
 		//! Sets whether the storage for the cannot be changed in the future (making glTexImage3D() calls illegal). More efficient when possible. Default is \c false.
