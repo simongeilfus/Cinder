@@ -1038,7 +1038,7 @@ GLint getMaxSamples()
 }
 GLint getMaxColorTextureSamples()
 {
-#if ! defined( CINDER_GL_ES )
+#if ! defined( CINDER_GL_ES_2 )
 	static GLint sMaxSamples = -1;
 	if( sMaxSamples < 0 ) {
 		glGetIntegerv( GL_MAX_COLOR_TEXTURE_SAMPLES, &sMaxSamples);
@@ -1050,7 +1050,7 @@ GLint getMaxColorTextureSamples()
 }
 GLint getMaxDepthTextureSamples()
 {
-#if ! defined( CINDER_GL_ES )
+#if ! defined( CINDER_GL_ES_2 )
 	static GLint sMaxSamples = -1;
 	if( sMaxSamples < 0 ) {
 		glGetIntegerv( GL_MAX_DEPTH_TEXTURE_SAMPLES, &sMaxSamples);
