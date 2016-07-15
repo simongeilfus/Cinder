@@ -1682,7 +1682,7 @@ Texture3d::Texture3d( GLint width, GLint height, GLint depth, Format format )
 
 	mTarget = format.getTarget();
 	ScopedTextureBind texBindScope( mTarget, mTextureId );
-	TextureBase::initParams( format, GL_RGB, GL_UNSIGNED_BYTE );
+	TextureBase::initParams( format, GL_RGB8, GL_UNSIGNED_BYTE );
 	
 #if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE ) || defined( CINDER_GL_HAS_TEXTURE_3D_STORAGE_MULTISAMPLE )
 	if( mTarget == GL_TEXTURE_2D_MULTISAMPLE_ARRAY ) {
