@@ -356,7 +356,7 @@ void Fbo::prepareAttachments( const Fbo::Format &format, bool multisampling )
 			mAttachmentsBuffer[GL_DEPTH_ATTACHMENT] = depthStencilBuffer;
 			mAttachmentsBuffer[GL_STENCIL_ATTACHMENT] = depthStencilBuffer;
 #else
-			mAttachmentsBuffer[GL_DEPTH_STENCIL_ATTACHMENT] = Renderbuffer::create( mWidth, mHeight, internalFormat );
+			mAttachmentsBuffer[GL_DEPTH_STENCIL_ATTACHMENT] = depthStencilBuffer;
 #endif
 		}
 		else {
