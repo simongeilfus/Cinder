@@ -151,6 +151,7 @@ Fbo::Format::Format()
 	
 	mDepthBufferInternalFormat = getDefaultDepthInternalFormat();
 	mDepthBuffer = true;
+	mDepthTextureFormat = getDefaultDepthTextureFormat();
 	mDepthTexture = false;
 	
 	mSamples = 0;
@@ -331,28 +332,45 @@ void Fbo::prepareAttachments( const Fbo::Format &format, bool multisampling )
 	
 	// Create the default depth(+stencil) attachment if there's not already something on GL_DEPTH_ATTACHMENT || GL_DEPTH_STENCIL_ATTACHMENT
 #if defined( CINDER_GL_ES_2 )
-	bool preexistingDepthAttachment = mAttachmentsTexture.count( GL_DEPTH_ATTACHMENT ) || mAttachmentsBuffer.count( GL_DEPTH_ATTACHMENT );
+	bool preexistingDepthAttachment		= mAttachmentsTexture.count( GL_DEPTH_ATTACHMENT ) || mAttachmentsBuffer.count( GL_DEPTH_ATTACHMENT );
+	bool layeredColorAttachment			= false;
+	bool hasCompatibleDepthAttachment	= true;
 #else
-	bool preexistingDepthAttachment = mAttachmentsTexture.count( GL_DEPTH_ATTACHMENT ) || mAttachmentsBuffer.count( GL_DEPTH_ATTACHMENT )
+	bool preexistingDepthAttachment		= mAttachmentsTexture.count( GL_DEPTH_ATTACHMENT ) || mAttachmentsBuffer.count( GL_DEPTH_ATTACHMENT )
 										|| mAttachmentsTexture.count( GL_DEPTH_STENCIL_ATTACHMENT ) || mAttachmentsBuffer.count( GL_DEPTH_STENCIL_ATTACHMENT );
+	// If the color attachment is layered all attachment need to be layered for the fbo to be complete. As layered RenderBuffers don't exist we force the use of a depth texture
+	bool layeredColorAttachment			= mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() == GL_TEXTURE_2D_ARRAY	|| mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() == GL_TEXTURE_2D_MULTISAMPLE_ARRAY;
+	bool hasCompatibleDepthAttachment	= mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() != GL_TEXTURE_3D;
 #endif
-	if( format.mDepthTexture && ( ! preexistingDepthAttachment ) ) {
+	if( hasCompatibleDepthAttachment && ( format.mDepthTexture || layeredColorAttachment ) && ( ! preexistingDepthAttachment ) ) {
+		TextureBaseRef depthStencilTexture;
+#if defined( CINDER_GL_ES_2 )
+		depthStencilTexture = Texture2d::create( mWidth, mHeight, format.mDepthTextureFormat );
+#else
+		if( ! layeredColorAttachment ) {
+			depthStencilTexture = Texture2d::create( mWidth, mHeight, format.mDepthTextureFormat );
+		}
+		else {
+			auto depthStencilTextureFormat = Texture3d::Format( (TextureBase::Format) format.mDepthTextureFormat ).target( mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() );
+			depthStencilTexture = Texture3d::create( mWidth, mHeight, mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getDepth(), depthStencilTextureFormat );
+		}
+#endif
+
 		if( format.mDepthTextureFormat.getInternalFormat() == GL_DEPTH_STENCIL ||
 			format.mDepthTextureFormat.getInternalFormat() == GL_DEPTH24_STENCIL8 ||
 			format.mDepthTextureFormat.getInternalFormat() == GL_DEPTH32F_STENCIL8 ) {
 #if defined( CINDER_GL_ES_2 )
-			TextureBaseRef depthStencilTexture = Texture::create( mWidth, mHeight, format.mDepthTextureFormat );
 			mAttachmentsTexture[GL_DEPTH_ATTACHMENT] = depthStencilTexture;
 			mAttachmentsTexture[GL_STENCIL_ATTACHMENT] = depthStencilTexture;
 #else
-			mAttachmentsTexture[GL_DEPTH_STENCIL_ATTACHMENT] = Texture::create( mWidth, mHeight, format.mDepthTextureFormat );
+			mAttachmentsTexture[GL_DEPTH_STENCIL_ATTACHMENT] = depthStencilTexture;
 #endif
 		}
 		else {
-			mAttachmentsTexture[GL_DEPTH_ATTACHMENT] = Texture::create( mWidth, mHeight, format.mDepthTextureFormat );
+			mAttachmentsTexture[GL_DEPTH_ATTACHMENT] = depthStencilTexture;
 		}		
 	}
-	else if( format.mDepthBuffer && ( ! preexistingDepthAttachment ) ) {
+	else if( hasCompatibleDepthAttachment && format.mDepthBuffer && ( ! preexistingDepthAttachment ) ) {
 		if( format.mStencilBuffer ) {
 			GLint internalFormat;
 			GLenum pixelDataType;
@@ -369,7 +387,7 @@ void Fbo::prepareAttachments( const Fbo::Format &format, bool multisampling )
 			mAttachmentsBuffer[GL_DEPTH_ATTACHMENT] = Renderbuffer::create( mWidth, mHeight, format.mDepthBufferInternalFormat );
 		}
 	}
-	else if( format.mStencilBuffer ) { // stencil only
+	else if( hasCompatibleDepthAttachment && format.mStencilBuffer ) { // stencil only
 		GLint internalFormat = GL_STENCIL_INDEX8;
 		RenderbufferRef stencilBuffer = Renderbuffer::create( mWidth, mHeight, internalFormat );
 		mAttachmentsBuffer[GL_STENCIL_ATTACHMENT] = stencilBuffer;
