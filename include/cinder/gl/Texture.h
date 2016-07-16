@@ -265,6 +265,8 @@ class TextureBase {
 		void			setBorderColor( const std::array<GLfloat, 4> &border ) { mBorderColor = border; mBorderSpecified = true; }
 		//! Sets the texture's border color. Ignored in OpenGL ES.
 		void			setBorderColor( const ColorA &color );
+		//! Returns the texture's border color. Ignored in OpenGL ES.
+		const std::array<GLfloat,4>& getBorderColor() const { return mBorderColor; }
 
 		//! Sets the swizzle mask corresponding to \c GL_TEXTURE_SWIZZLE_RGBA. Expects \c GL_RED through \c GL_ALPHA, or \c GL_ONE or \c GL_ZERO
 		void	setSwizzleMask( const std::array<GLint,4> &swizzleMask ) { mSwizzleMask = swizzleMask; mSwizzleSpecified = true; }
@@ -659,6 +661,8 @@ class Texture3d : public TextureBase {
 	struct Format : public TextureBase::Format {
 		//! Default constructor, sets the target to \c GL_TEXTURE_3D, wrap to \c GL_CLAMP, disables mipmapping, the internal format to "automatic"
 		Format() : TextureBase::Format() { mTarget = GL_TEXTURE_3D; }
+		//! Constructs a Texture3d::Format from a TextureBase::Format
+		Format( const TextureBase::Format &format );
 
 		//! Chaining functions for Format class.
 		//! Sets the target, defaults to \c GL_TEXTURE_3D, also supports \c GL_TEXTURE_2D_ARRAY

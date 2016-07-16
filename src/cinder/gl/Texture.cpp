@@ -1642,9 +1642,36 @@ ImageSourceRef Texture2d::createSource()
 #if ! defined( CINDER_GL_ES_2 )
 /////////////////////////////////////////////////////////////////////////////////
 // Texture3d
-
 GLint Texture3d::sMaxDepth = -1;
 GLint Texture3d::sMaxLayers = -1;
+
+Texture3d::Format::Format( const TextureBase::Format &format )
+	: TextureBase::Format()
+{
+	setTarget( GL_TEXTURE_3D );
+	setWrapS( format.getWrapS() );
+	setWrapT( format.getWrapT() );
+	setWrapR( format.getWrapR() );
+	setMinFilter( format.getMinFilter() );
+	setMagFilter( format.getMagFilter() );
+	setCompareMode( format.getCompareMode() );
+	setCompareFunc( format.getCompareFunc() );
+	enableMipmapping( format.hasMipmapping() );
+	setBaseMipmapLevel( format.getBaseMipmapLevel() );
+	setMaxMipmapLevel( format.getMaxMipmapLevel() );
+	setSamples( format.getSamples(), format.hasFixedSampleLocations() );
+	setImmutableStorage( format.isImmutableStorage() );
+	setMaxAnisotropy( format.getMaxAnisotropy() );
+	setInternalFormat( format.getInternalFormat() );
+	setDataType( format.getDataType() );
+	setSwizzleMask( format.getSwizzleMask() );
+	setBorderColor( format.getBorderColor() );
+	setLabel( format.getLabel() );
+
+	#if ! defined( CINDER_GL_ES )		
+		setIntermediatePbo( format.getIntermediatePbo() );
+	#endif
+}
 
 Texture3dRef Texture3d::create( GLint width, GLint height, GLint depth, const Format &format )
 {
