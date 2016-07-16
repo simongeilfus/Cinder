@@ -3,7 +3,6 @@
 #include "cinder/gl/gl.h"
 
 #define CATCH_CONFIG_NOSTDOUT
-
 namespace Catch {
 	std::ostream &cout() { return ci::app::console(); }
 	std::ostream &cerr() { return ci::app::console(); }
@@ -205,6 +204,7 @@ TEST_CASE( "15. Layered Fbo: Custom Color Texture 2D Array / Default Depth Buffe
 	REQUIRE( gl::getError() == GL_NO_ERROR );
 	REQUIRE( gl::Fbo::checkStatus() );
 	REQUIRE( dynamic_pointer_cast<gl::Texture3d>( fbo->getTextureBase( GL_COLOR_ATTACHMENT0 ) ) );
+	REQUIRE( dynamic_pointer_cast<gl::Texture3d>( fbo->getTextureBase( GL_DEPTH_ATTACHMENT ) ) );
 	REQUIRE( ! fbo->getColorTexture() );
 	REQUIRE( ! fbo->getDepthTexture() );
 	REQUIRE( fbo->hasDepthAttachment() );
@@ -226,15 +226,103 @@ TEST_CASE( "16. Layered Fbo: Custom Color Texture 2D Array / Default Depth Textu
 	REQUIRE( fbo->hasDepthAttachment() );
 	REQUIRE( ! fbo->hasStencilAttachment() );
 }
-
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "17. Layered Fbo: Custom Color Texture 2D Array / Default Depth Buffer / Default stencil Buffer" ) { 
+	auto fbo = gl::Fbo::create( 256, 256, gl::Fbo::Format()
+								.attachment( GL_COLOR_ATTACHMENT0, gl::Texture3d::create( 256, 256, 16, gl::Texture3d::Format().target( GL_TEXTURE_2D_ARRAY ) ) )
+								.stencilBuffer() );
+		
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( dynamic_pointer_cast<gl::Texture3d>( fbo->getTextureBase( GL_COLOR_ATTACHMENT0 ) ) );
+	REQUIRE( ! fbo->getColorTexture() );
+	REQUIRE( ! fbo->getDepthTexture() );
+	REQUIRE( fbo->hasDepthAttachment() );
+	REQUIRE( fbo->hasStencilAttachment() );
+}
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "18. Layered Fbo: Custom Color Texture 2D Array / Default Depth Texture / Default stencil Buffer" ) { 
+	auto fbo = gl::Fbo::create( 256, 256, gl::Fbo::Format()
+								.attachment( GL_COLOR_ATTACHMENT0, gl::Texture3d::create( 256, 256, 16, gl::Texture3d::Format().target( GL_TEXTURE_2D_ARRAY ) ) )
+								.depthTexture()
+								.stencilBuffer() 
+	);
+		
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( dynamic_pointer_cast<gl::Texture3d>( fbo->getTextureBase( GL_COLOR_ATTACHMENT0 ) ) );
+	REQUIRE( dynamic_pointer_cast<gl::Texture3d>( fbo->getTextureBase( GL_DEPTH_STENCIL_ATTACHMENT ) ) );
+	REQUIRE( ! fbo->getColorTexture() );
+	REQUIRE( ! fbo->getDepthTexture() );
+	REQUIRE( fbo->hasDepthAttachment() );
+	REQUIRE( fbo->hasStencilAttachment() );
+}
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "19. Stencil Fbo: Default Color Texture / No Depth / Default stencil Buffer" ) { 
+	auto fbo = gl::Fbo::create( 256, 256, gl::Fbo::Format().stencilBuffer().disableDepth() );
+		
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( fbo->getColorTexture() );
+	REQUIRE( ! fbo->getDepthTexture() );
+	REQUIRE( ! fbo->hasDepthAttachment() );
+	REQUIRE( fbo->hasStencilAttachment() );
+}
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "20. Stencil Fbo: Custom Color Texture / No Depth / Default stencil Buffer" ) { 
+	auto fbo = gl::Fbo::create( 256, 256, gl::Fbo::Format().stencilBuffer().disableDepth()
+								.attachment( GL_COLOR_ATTACHMENT0, gl::Texture2d::create( 256, 256 ) ) );
+		
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( fbo->getColorTexture() );
+	REQUIRE( ! fbo->getDepthTexture() );
+	REQUIRE( ! fbo->hasDepthAttachment() );
+	REQUIRE( fbo->hasStencilAttachment() );
+}
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "21. Stencil 3d Fbo: Custom 3d Texture / No Depth / Default stencil Buffer" ) { 
+	auto fbo = gl::Fbo::create( 256, 256, gl::Fbo::Format().stencilBuffer().disableDepth()
+								.attachment( GL_COLOR_ATTACHMENT0, gl::Texture3d::create( 256, 256, 64 ) ) );
+		
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( fbo->getColorTexture() );
+	REQUIRE( ! fbo->getDepthTexture() );
+	REQUIRE( ! fbo->hasDepthAttachment() );
+	REQUIRE( ! fbo->hasStencilAttachment() ); // texture3d can't have a stencil buffer
+}
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "22. Stencil Layered Fbo: Custom 2d Texture Array / No Depth / Default stencil Buffer" ) { 
+	auto fbo = gl::Fbo::create( 256, 256, gl::Fbo::Format().stencilBuffer().disableDepth()
+								.attachment( GL_COLOR_ATTACHMENT0, gl::Texture3d::create( 256, 256, 64, gl::Texture3d::Format().target( GL_TEXTURE_2D_ARRAY ) ) ) );
+		
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( fbo->getColorTexture() );
+	REQUIRE( ! fbo->getDepthTexture() );
+	REQUIRE( ! fbo->hasDepthAttachment() );
+	REQUIRE( fbo->hasStencilAttachment() );
+}
 
 class FboTestSuite : public App {
 public:
-	FboTestSuite()
+	void setup()
 	{
 		Catch::Session session;
+		//session.configData().showSuccessfulTests = true;
+		session.configData().useColour = Catch::UseColour::Yes;
 		session.run();
 	}
 };
 
-CINDER_APP( FboTestSuite, RendererGl( RendererGl::Options().debugBreak( GL_DEBUG_SEVERITY_NOTIFICATION ).debugLog( GL_DEBUG_SEVERITY_NOTIFICATION ) ) )
+CINDER_APP( FboTestSuite, RendererGl( RendererGl::Options().debugBreak( GL_DEBUG_SEVERITY_LOW ).debugLog( GL_DEBUG_SEVERITY_LOW ) ), []( App::Settings *settings ) {
+	settings->setConsoleWindowEnabled();
+	settings->setWindowSize( ivec2( 0, 0 ) );
+} )
