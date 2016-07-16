@@ -1,4 +1,3 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug_ANGLE|Win32">
@@ -27,10 +26,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{8F6B76BD-EA64-49B5-98AC-BEE205CB2264}</ProjectGuid>
-    <RootNamespace>Fbos</RootNamespace>
+    <ProjectGuid>{82A3D35F-1B2E-4BD9-9F00-AE3DA54BE979}</ProjectGuid>
+    <RootNamespace>FboTestSuite</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>FboTestSuite</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -273,7 +271,7 @@ xcopy /y "..\..\..\..\lib\msw\x86\d3dcompiler_46.dll" "$(OutDir)"</Command>
   <ItemGroup />
   <ItemGroup />
   <ItemGroup>
-    <ClCompile Include="..\src\FboTestSuite.cpp" />
+    <ClCompile Include="..\src\FboTestSuiteApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h" />

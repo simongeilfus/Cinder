@@ -33,16 +33,16 @@
 		C7FB19D6124BC0D70045AFD2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7FB19D5124BC0D70045AFD2 /* AudioToolbox.framework */; };
 		00A66A361965AC8800B17EB3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00A66A351965AC8800B17EB3 /* Accelerate.framework */; };
 		00748058165D41390024B57A /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 00748057165D41390024B57A /* assets */; };
-		19ABD0F8B200457EB0A7EB32 /* Fbos_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 09BE121AE7894CF8AE57D3A4 /* Fbos_Prefix.pch */; };
-		FA400384EE2C4BA9AF441FAE /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5C2EFE3A8E5A4CF7968ABB0B /* LaunchScreen.xib */; };
-		3FA6FC535BA4499ABFD989E0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFD55942B16342F28EDA82C6 /* Images.xcassets */; };
-		CB41A8C3C4344211833320E2 /* CinderApp_ios.png in Resources */ = {isa = PBXBuildFile; fileRef = F4EBFD0C90094BD38FF83A28 /* CinderApp_ios.png */; };
-		F7ED04349A5F4F388561469E /* Resources.h in Headers */ = {isa = PBXBuildFile; fileRef = A5FE9661930A4653BFD2FD42 /* Resources.h */; };
-		FA50A67518B84AA582B18CD4 /* FbosApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49284A75F6DF449B9CA64C97 /* FbosApp.cpp */; };
+		7787551E364A4843BFC54E8F /* FboTestSuite_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 569724A593C64BB89427AD70 /* FboTestSuite_Prefix.pch */; };
+		FDB2DDB990DF4A00864A4D66 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 80DAD7F66202495FBDD5509F /* LaunchScreen.xib */; };
+		279AF4E1FB80435688405635 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00CD11CF206C4EFDBC5F80A6 /* Images.xcassets */; };
+		C9C142F72FFE4CF2A046E01A /* CinderApp_ios.png in Resources */ = {isa = PBXBuildFile; fileRef = A5CF2EB1E2F54A708602EA94 /* CinderApp_ios.png */; };
+		E4B46C482847473A9AED3C82 /* Resources.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B12909C408C413A9D0F9F6B /* Resources.h */; };
+		4693AFDCA9414B30A09EED96 /* FboTestSuiteApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2016B2E784B24BE34B49E /* FboTestSuiteApp.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		00692BCF14FF149000D0A05E /* Fbos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fbos.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00692BCF14FF149000D0A05E /* FboTestSuite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FboTestSuite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0087D25412CD809F002CD69F /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		00CFDF6A1138442D0091E310 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		00CFDF6A1138442D0091FFFF /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
@@ -57,13 +57,13 @@
 		C7FB19D5124BC0D70045AFD2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		00A66A351965AC8800B17EB3 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		00748057165D41390024B57A /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../assets; sourceTree = "<group>"; };
-		49284A75F6DF449B9CA64C97 /* FbosApp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; path = ../src/FbosApp.cpp; sourceTree = "<group>"; name = FbosApp.cpp; };
-		A5FE9661930A4653BFD2FD42 /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ../include/Resources.h; sourceTree = "<group>"; name = Resources.h; };
-		F4EBFD0C90094BD38FF83A28 /* CinderApp_ios.png */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = ../resources/CinderApp_ios.png; sourceTree = "<group>"; name = CinderApp_ios.png; };
-		BFD55942B16342F28EDA82C6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = Images.xcassets; sourceTree = "<group>"; name = Images.xcassets; };
-		5C2EFE3A8E5A4CF7968ABB0B /* LaunchScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = LaunchScreen.xib; sourceTree = "<group>"; name = LaunchScreen.xib; };
-		9FFBEC0F49754E95BB0F0FEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; name = Info.plist; };
-		09BE121AE7894CF8AE57D3A4 /* Fbos_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = Fbos_Prefix.pch; sourceTree = "<group>"; name = Fbos_Prefix.pch; };
+		7CD2016B2E784B24BE34B49E /* FboTestSuiteApp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; path = ../src/FboTestSuiteApp.cpp; sourceTree = "<group>"; name = FboTestSuiteApp.cpp; };
+		1B12909C408C413A9D0F9F6B /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ../include/Resources.h; sourceTree = "<group>"; name = Resources.h; };
+		A5CF2EB1E2F54A708602EA94 /* CinderApp_ios.png */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = ../resources/CinderApp_ios.png; sourceTree = "<group>"; name = CinderApp_ios.png; };
+		00CD11CF206C4EFDBC5F80A6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = Images.xcassets; sourceTree = "<group>"; name = Images.xcassets; };
+		80DAD7F66202495FBDD5509F /* LaunchScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = LaunchScreen.xib; sourceTree = "<group>"; name = LaunchScreen.xib; };
+		538342B910604018BA40E5B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; name = Info.plist; };
+		569724A593C64BB89427AD70 /* FboTestSuite_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = FboTestSuite_Prefix.pch; sourceTree = "<group>"; name = FboTestSuite_Prefix.pch; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,7 +105,7 @@
 		00692BD014FF149000D0A05E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				00692BCF14FF149000D0A05E /* Fbos.app */,
+				00692BCF14FF149000D0A05E /* FboTestSuite.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -140,8 +140,8 @@
 		99692BD914FF149000D0A05F /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				A5FE9661930A4653BFD2FD42 /* Resources.h */,
-				09BE121AE7894CF8AE57D3A4 /* Fbos_Prefix.pch */,
+				1B12909C408C413A9D0F9F6B /* Resources.h */,
+				569724A593C64BB89427AD70 /* FboTestSuite_Prefix.pch */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -149,7 +149,7 @@
 		00692BD914FF149000D0A05E /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				49284A75F6DF449B9CA64C97 /* FbosApp.cpp */,
+				7CD2016B2E784B24BE34B49E /* FboTestSuiteApp.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -158,10 +158,10 @@
 			isa = PBXGroup;
 			children = (
 				00748057165D41390024B57A /* assets */,
-				F4EBFD0C90094BD38FF83A28 /* CinderApp_ios.png */,
-				BFD55942B16342F28EDA82C6 /* Images.xcassets */,
-				5C2EFE3A8E5A4CF7968ABB0B /* LaunchScreen.xib */,
-				9FFBEC0F49754E95BB0F0FEA /* Info.plist */,
+				A5CF2EB1E2F54A708602EA94 /* CinderApp_ios.png */,
+				00CD11CF206C4EFDBC5F80A6 /* Images.xcassets */,
+				80DAD7F66202495FBDD5509F /* LaunchScreen.xib */,
+				538342B910604018BA40E5B6 /* Info.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -169,9 +169,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00692BCE14FF149000D0A05E /* Fbos */ = {
+		00692BCE14FF149000D0A05E /* FboTestSuite */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00692BF514FF149000D0A05E /* Build configuration list for PBXNativeTarget "Fbos" */;
+			buildConfigurationList = 00692BF514FF149000D0A05E /* Build configuration list for PBXNativeTarget "FboTestSuite" */;
 			buildPhases = (
 				00692BCB14FF149000D0A05E /* Sources */,
 				00692BCC14FF149000D0A05E /* Frameworks */,
@@ -181,9 +181,9 @@
 			);
 			dependencies = (
 			);
-			name = Fbos;
-			productName = Fbos;
-			productReference = 00692BCF14FF149000D0A05E /* Fbos.app */;
+			name = FboTestSuite;
+			productName = FboTestSuite;
+			productReference = 00692BCF14FF149000D0A05E /* FboTestSuite.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -191,7 +191,7 @@
 /* Begin PBXProject section */
 		00692BC614FF149000D0A05E /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = 00692BC914FF149000D0A05E /* Build configuration list for PBXProject "Fbos" */;
+			buildConfigurationList = 00692BC914FF149000D0A05E /* Build configuration list for PBXProject "FboTestSuite" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -203,7 +203,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				00692BCE14FF149000D0A05E /* Fbos */,
+				00692BCE14FF149000D0A05E /* FboTestSuite */,
 			);
 		};
 /* End PBXProject section */
@@ -214,9 +214,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				00748058165D41390024B57A /* assets in Resources */,
-				CB41A8C3C4344211833320E2 /* CinderApp_ios.png in Resources */,
-				3FA6FC535BA4499ABFD989E0 /* Images.xcassets in Resources */,
-				FA400384EE2C4BA9AF441FAE /* LaunchScreen.xib in Resources */,
+				C9C142F72FFE4CF2A046E01A /* CinderApp_ios.png in Resources */,
+				279AF4E1FB80435688405635 /* Images.xcassets in Resources */,
+				FDB2DDB990DF4A00864A4D66 /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,7 +227,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA50A67518B84AA582B18CD4 /* FbosApp.cpp in Sources */,
+				4693AFDCA9414B30A09EED96 /* FboTestSuiteApp.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -301,7 +301,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Fbos_Prefix.pch";
+				GCC_PREFIX_HEADER = "FboTestSuite_Prefix.pch";
 				INFOPLIST_FILE = "Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -320,7 +320,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Fbos_Prefix.pch";
+				GCC_PREFIX_HEADER = "FboTestSuite_Prefix.pch";
 				INFOPLIST_FILE = "Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -338,7 +338,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00692BC914FF149000D0A05E /* Build configuration list for PBXProject "Fbos" */ = {
+		00692BC914FF149000D0A05E /* Build configuration list for PBXProject "FboTestSuite" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00692BF314FF149000D0A05E /* Debug */,
@@ -347,7 +347,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		00692BF514FF149000D0A05E /* Build configuration list for PBXNativeTarget "Fbos" */ = {
+		00692BF514FF149000D0A05E /* Build configuration list for PBXNativeTarget "FboTestSuite" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00692BF614FF149000D0A05E /* Debug */,
