@@ -912,14 +912,11 @@ Texture2d::Texture2d( int width, int height, Format format )
 	
 #if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE ) || defined( CINDER_GL_HAS_TEXTURE_2D_STORAGE_MULTISAMPLE )
 	if( mTarget == GL_TEXTURE_2D_MULTISAMPLE ) {
-		glTexParameteri( GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAX_LEVEL, 0 ); 
+		mMaxMipmapLevel = 0;
 	}
-	else {
-		initMaxMipmapLevel();
-	}
-#else
-	initMaxMipmapLevel();
 #endif
+	initMaxMipmapLevel();
+
 	env()->allocateTexStorage2d( mTarget, mMaxMipmapLevel + 1, mInternalFormat, width, height, format.isImmutableStorage(), format.getDataType(), format.getSamples(), format.hasFixedSampleLocations() );
 }
 
@@ -1708,14 +1705,16 @@ Texture3d::Texture3d( GLint width, GLint height, GLint depth, Format format )
 
 	mTarget = format.getTarget();
 	ScopedTextureBind texBindScope( mTarget, mTextureId );
-	TextureBase::initParams( format, GL_RGB8, GL_UNSIGNED_BYTE );
+	TextureBase::initParams( format, GL_RGB8, 0 );
 	
-#if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE ) || defined( CINDER_GL_HAS_TEXTURE_3D_STORAGE_MULTISAMPLE )
+#if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE ) || defined( CINDER_GL_HAS_TEXTURE_2D_STORAGE_MULTISAMPLE )
 	if( mTarget == GL_TEXTURE_2D_MULTISAMPLE_ARRAY ) {
-		glTexParameteri( GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_MAX_LEVEL, 0 ); 
+		mMaxMipmapLevel = 0;
 	}
 #endif
-	env()->allocateTexStorage3d( mTarget, format.mMaxMipmapLevel + 1, mInternalFormat, mWidth, mHeight, mDepth, format.isImmutableStorage(), format.getSamples(), format.hasFixedSampleLocations() );
+	initMaxMipmapLevel();
+	
+	env()->allocateTexStorage3d( mTarget, mMaxMipmapLevel + 1, mInternalFormat, mWidth, mHeight, mDepth, format.isImmutableStorage(), format.getSamples(), format.hasFixedSampleLocations() );
 }
 
 Texture3d::Texture3d( const void *data, GLenum dataFormat, int width, int height, int depth, Format format )
@@ -1764,6 +1763,14 @@ GLint Texture3d::getMaxLayers()
 	return sMaxLayers;
 }
 
+void Texture3d::initMaxMipmapLevel()
+{
+	if( mMaxMipmapLevel == -1 )
+		mMaxMipmapLevel = requiredMipLevels( mWidth, mHeight, mDepth ) - 1;
+#if ! defined( CINDER_GL_ES_2 )
+	glTexParameteri( mTarget, GL_TEXTURE_MAX_LEVEL, mMaxMipmapLevel );
+#endif
+}
 void Texture3d::printDims( std::ostream &os ) const
 {
 	os << mWidth << " x " << mHeight << " x " << mDepth;
