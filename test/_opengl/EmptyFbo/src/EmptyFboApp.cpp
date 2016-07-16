@@ -19,6 +19,11 @@ class EmptyFboApp : public App {
 
 EmptyFboApp::EmptyFboApp()
 {
+	// sanity checks
+	console() << "gl::getMaxSamples()\t\t\t\t\t" << gl::getMaxSamples() << endl;
+	console() << "gl::getMaxColorTextureSamples()\t\t" << gl::getMaxColorTextureSamples() << endl;
+	console() << "gl::getMaxDepthTextureSamples()\t\t" << gl::getMaxDepthTextureSamples() << endl;
+	
 	// create 3 test textures
 	mTextureRed		= gl::Texture2d::create( getWindowWidth() / 3, getWindowHeight() );
 	mTextureGreen	= gl::Texture2d::create( getWindowWidth() / 3, getWindowHeight() );
@@ -40,25 +45,25 @@ EmptyFboApp::EmptyFboApp()
 	gl::clear( Color( 0.0f, 0.0f, 1.0f ) );
 
 	// just to make sure let's check if there's an issue with our fbo	
-	gl::Fbo::checkStatus();
+	gl::Fbo::checkStatus(); // now check inside gl::Fbo::attach
 
 	// check for erros
 	CI_CHECK_GL();
 
 	// need more work here:	
-	console() << "fbo->getAspectRatio()\t" << fbo->getAspectRatio() << endl;
-	console() << "fbo->getBounds()\t" << fbo->getBounds() << endl;
-	console() << "fbo->getColorTexture()\t" << fbo->getColorTexture() << endl;
-	console() << "fbo->getDepthTexture()\t" << fbo->getDepthTexture() << endl;
-	console() << "fbo->getFormat()\t" << fbo->getFormat().getLabel() << endl;
-	console() << "fbo->getHeight()\t" << fbo->getHeight() << endl;
-	console() << "fbo->getLabel()\t" << fbo->getLabel() << endl;
-	console() << "fbo->getMultisampleId()\t" << fbo->getMultisampleId() << endl;
-	console() << "fbo->getResolveId()\t" << fbo->getResolveId() << endl;
-	console() << "fbo->getSize()\t" << fbo->getSize() << endl;
-	console() << "fbo->getTexture2d()\t" << fbo->getTexture2d( GL_COLOR_ATTACHMENT0 ) << endl;
-	console() << "fbo->getTextureBase()\t" << fbo->getTextureBase( GL_COLOR_ATTACHMENT0 ) << endl;
-	console() << "fbo->getWidth()\t" << fbo->getWidth() << endl;
+	console() << "AspectRatio\t\t\t" << fbo->getAspectRatio() << endl;
+	console() << "Bounds\t\t\t\t" << fbo->getBounds() << endl;
+	console() << "ColorTexture\t\t" << fbo->getColorTexture() << endl;
+	console() << "DepthTexture\t\t" << fbo->getDepthTexture() << endl;
+	console() << "Format\t\t" << fbo->getFormat().getLabel() << endl;
+	console() << "Height\t\t\t\t" << fbo->getHeight() << endl;
+	console() << "Label\t\t\t\t" << fbo->getLabel() << endl;
+	console() << "MultisampleId\t\t" << fbo->getMultisampleId() << endl;
+	console() << "ResolveId\t\t\t" << fbo->getResolveId() << endl;
+	console() << "Size\t\t\t\t" << fbo->getSize() << endl;
+	console() << "Texture2d\t\t\t" << fbo->getTexture2d( GL_COLOR_ATTACHMENT0 ) << endl;
+	console() << "TextureBase\t\t\t" << fbo->getTextureBase( GL_COLOR_ATTACHMENT0 ) << endl;
+	console() << "Width\t\t\t\t" << fbo->getWidth() << endl;
 }
 
 void EmptyFboApp::draw()
@@ -143,19 +148,19 @@ void EmptyFboApp::mouseDown( MouseEvent event )
 	CI_CHECK_GL();
 
 	// need more work here:	
-	console() << "fbo->getAspectRatio()\t" << fbo->getAspectRatio() << endl;
-	console() << "fbo->getBounds()\t" << fbo->getBounds() << endl;
-	console() << "fbo->getColorTexture()\t" << fbo->getColorTexture() << endl;
-	console() << "fbo->getDepthTexture()\t" << fbo->getDepthTexture() << endl;
-	console() << "fbo->getFormat()\t" << fbo->getFormat().getLabel() << endl;
-	console() << "fbo->getHeight()\t" << fbo->getHeight() << endl;
-	console() << "fbo->getLabel()\t" << fbo->getLabel() << endl;
-	console() << "fbo->getMultisampleId()\t" << fbo->getMultisampleId() << endl;
-	console() << "fbo->getResolveId()\t" << fbo->getResolveId() << endl;
-	console() << "fbo->getSize()\t" << fbo->getSize() << endl;
-	console() << "fbo->getTexture2d()\t" << fbo->getTexture2d( GL_COLOR_ATTACHMENT0 ) << endl;
-	console() << "fbo->getTextureBase()\t" << fbo->getTextureBase( GL_COLOR_ATTACHMENT0 ) << endl;
-	console() << "fbo->getWidth()\t" << fbo->getWidth() << endl;
+	console() << "AspectRatio\t\t\t" << fbo->getAspectRatio() << endl;
+	console() << "Bounds\t\t\t\t" << fbo->getBounds() << endl;
+	console() << "ColorTexture\t\t" << fbo->getColorTexture() << endl;
+	console() << "DepthTexture\t\t" << fbo->getDepthTexture() << endl;
+	console() << "Format\t\t" << fbo->getFormat().getLabel() << endl;
+	console() << "Height\t\t\t\t" << fbo->getHeight() << endl;
+	console() << "Label\t\t\t\t" << fbo->getLabel() << endl;
+	console() << "MultisampleId\t\t" << fbo->getMultisampleId() << endl;
+	console() << "ResolveId\t\t\t" << fbo->getResolveId() << endl;
+	console() << "Size\t\t\t\t" << fbo->getSize() << endl;
+	console() << "Texture2d\t\t\t" << fbo->getTexture2d( GL_COLOR_ATTACHMENT0 ) << endl;
+	console() << "TextureBase\t\t\t" << fbo->getTextureBase( GL_COLOR_ATTACHMENT0 ) << endl;
+	console() << "Width\t\t\t\t" << fbo->getWidth() << endl;
 }
 void EmptyFboApp::keyDown( KeyEvent event ) 
 {
