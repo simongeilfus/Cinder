@@ -183,6 +183,10 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
 
 	//! Returns whether the Fbo is valid and complete and throw an exception if not.
 	static bool		checkStatus();
+	
+	bool hasDepthAttachment() const { return mAttachmentsBuffer.find( GL_DEPTH_ATTACHMENT ) != mAttachmentsBuffer.end() || mAttachmentsBuffer.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsBuffer.end() || mAttachmentsTexture.find( GL_DEPTH_ATTACHMENT ) != mAttachmentsTexture.end() || mAttachmentsTexture.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsTexture.end(); }
+	//
+	bool hasStencilAttachment() const { return mAttachmentsBuffer.find( GL_STENCIL_ATTACHMENT ) != mAttachmentsBuffer.end() || mAttachmentsBuffer.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsBuffer.end() || mAttachmentsTexture.find( GL_STENCIL_ATTACHMENT ) != mAttachmentsTexture.end() || mAttachmentsTexture.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsTexture.end(); }
 
 	//! \brief Defines the Format of the Fbo, which is passed in via create().
 	//!
