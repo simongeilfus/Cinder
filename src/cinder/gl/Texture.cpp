@@ -905,9 +905,9 @@ Texture2d::Texture2d( int width, int height, Format format )
 	ScopedTextureBind texBindScope( mTarget, mTextureId );
 
 #if ! defined( CINDER_GL_ES_2 )
-	initParams( format, GL_RGBA8, GL_UNSIGNED_BYTE );
+	initParams( format, GL_RGBA8, 0 );
 #else
-	initParams( format, GL_RGBA, GL_UNSIGNED_BYTE );
+	initParams( format, GL_RGBA, 0 );
 #endif
 	
 #if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE ) || defined( CINDER_GL_HAS_TEXTURE_2D_STORAGE_MULTISAMPLE )
@@ -916,7 +916,6 @@ Texture2d::Texture2d( int width, int height, Format format )
 	}
 	else {
 		initMaxMipmapLevel();
-
 	}
 #else
 	initMaxMipmapLevel();
