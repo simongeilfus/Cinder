@@ -337,7 +337,14 @@ void Fbo::prepareAttachments( const Fbo::Format &format, bool multisampling )
 										|| mAttachmentsTexture.count( GL_DEPTH_STENCIL_ATTACHMENT ) || mAttachmentsBuffer.count( GL_DEPTH_STENCIL_ATTACHMENT );
 #endif
 	if( format.mDepthTexture && ( ! preexistingDepthAttachment ) ) {
-		mAttachmentsTexture[GL_DEPTH_ATTACHMENT] = Texture::create( mWidth, mHeight, format.mDepthTextureFormat );
+		if( format.mDepthTextureFormat.getInternalFormat() == GL_DEPTH_STENCIL ||
+			format.mDepthTextureFormat.getInternalFormat() == GL_DEPTH24_STENCIL8 ||
+			format.mDepthTextureFormat.getInternalFormat() == GL_DEPTH32F_STENCIL8 ) {
+			mAttachmentsTexture[GL_DEPTH_STENCIL_ATTACHMENT] = Texture::create( mWidth, mHeight, format.mDepthTextureFormat );
+		}
+		else {
+			mAttachmentsTexture[GL_DEPTH_ATTACHMENT] = Texture::create( mWidth, mHeight, format.mDepthTextureFormat );
+		}		
 	}
 	else if( format.mDepthBuffer && ( ! preexistingDepthAttachment ) ) {
 		if( format.mStencilBuffer ) {
