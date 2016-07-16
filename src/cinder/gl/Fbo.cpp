@@ -373,7 +373,7 @@ void Fbo::prepareAttachments( const Fbo::Format &format, bool multisampling )
 					mAttachmentsTexture[GL_DEPTH_ATTACHMENT] = Texture2d::create( mWidth, mHeight, format.mDepthTextureFormat );
 				}
 				else {
-					GLint depth = mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getDepth();
+					GLint depth		= mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getDepth();
 					GLenum target	= mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget();
 					mAttachmentsTexture[GL_DEPTH_ATTACHMENT] = Texture3d::create( mWidth, mHeight, depth, Texture3d::Format( format.mDepthTextureFormat ).target( target ) );
 				}
@@ -398,9 +398,23 @@ void Fbo::prepareAttachments( const Fbo::Format &format, bool multisampling )
 			}
 		}
 		else if( format.mStencilBuffer ) { // stencil only
+#if defined( CINDER_GL_ES_2 )
 			GLint internalFormat = GL_STENCIL_INDEX8;
 			RenderbufferRef stencilBuffer = Renderbuffer::create( mWidth, mHeight, internalFormat );
 			mAttachmentsBuffer[GL_STENCIL_ATTACHMENT] = stencilBuffer;
+#else
+			if( ! layeredColorAttachment ) {
+				GLint internalFormat = GL_STENCIL_INDEX8;
+				RenderbufferRef stencilBuffer = Renderbuffer::create( mWidth, mHeight, internalFormat );
+				mAttachmentsBuffer[GL_STENCIL_ATTACHMENT] = stencilBuffer;
+			}
+			else {
+				GLint internalFormat = GL_STENCIL_INDEX8;
+				GLint depth	= mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getDepth();
+				GLenum target = mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget();
+				mAttachmentsTexture[GL_STENCIL_ATTACHMENT] = Texture3d::create( mWidth, mHeight, depth, Texture3d::Format( format.mDepthTextureFormat ).target( target ).internalFormat( internalFormat ) );
+			}
+#endif
 		}
 	}
 }
