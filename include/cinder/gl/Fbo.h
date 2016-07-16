@@ -183,10 +183,11 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
 
 	//! Returns whether the Fbo is valid and complete and throw an exception if not.
 	static bool		checkStatus();
-	
-	bool hasDepthAttachment() const { return mAttachmentsBuffer.find( GL_DEPTH_ATTACHMENT ) != mAttachmentsBuffer.end() || mAttachmentsBuffer.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsBuffer.end() || mAttachmentsTexture.find( GL_DEPTH_ATTACHMENT ) != mAttachmentsTexture.end() || mAttachmentsTexture.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsTexture.end(); }
-	//
-	bool hasStencilAttachment() const { return mAttachmentsBuffer.find( GL_STENCIL_ATTACHMENT ) != mAttachmentsBuffer.end() || mAttachmentsBuffer.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsBuffer.end() || mAttachmentsTexture.find( GL_STENCIL_ATTACHMENT ) != mAttachmentsTexture.end() || mAttachmentsTexture.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsTexture.end(); }
+
+	//! Returns whether the Fbo has anything attached to its depth or depth_stencil attachment
+	bool			hasDepthAttachment() const;
+	//! Returns whether the Fbo has anything attached to its stencil or depth_stencil attachment
+	bool			hasStencilAttachment() const;
 
 	//! \brief Defines the Format of the Fbo, which is passed in via create().
 	//!

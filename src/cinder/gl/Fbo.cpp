@@ -882,6 +882,27 @@ bool Fbo::checkStatus()
 	return status;
 }
 
+bool Fbo::hasDepthAttachment() const 
+{ 
+	return 
+#if ! defined( CINDER_GL_ES_2 )
+		mAttachmentsBuffer.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsBuffer.end() 
+		|| mAttachmentsTexture.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsTexture.end() ||
+#endif
+		mAttachmentsBuffer.find( GL_DEPTH_ATTACHMENT ) != mAttachmentsBuffer.end() 
+		|| mAttachmentsTexture.find( GL_DEPTH_ATTACHMENT ) != mAttachmentsTexture.end(); 
+}
+bool Fbo::hasStencilAttachment() const 
+{ 
+	return 
+#if ! defined( CINDER_GL_ES_2 )
+		mAttachmentsBuffer.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsBuffer.end()
+		|| mAttachmentsTexture.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsTexture.end() ||
+#endif
+		mAttachmentsBuffer.find( GL_STENCIL_ATTACHMENT ) != mAttachmentsBuffer.end()  
+		|| mAttachmentsTexture.find( GL_STENCIL_ATTACHMENT ) != mAttachmentsTexture.end();
+}
+
 #if ! defined( CINDER_GL_ES )
 void Fbo::blitTo( const FboRef &dst, const Area &srcArea, const Area &dstArea, GLenum filter, GLbitfield mask ) const
 {
