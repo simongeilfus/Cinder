@@ -340,7 +340,13 @@ void Fbo::prepareAttachments( const Fbo::Format &format, bool multisampling )
 		if( format.mDepthTextureFormat.getInternalFormat() == GL_DEPTH_STENCIL ||
 			format.mDepthTextureFormat.getInternalFormat() == GL_DEPTH24_STENCIL8 ||
 			format.mDepthTextureFormat.getInternalFormat() == GL_DEPTH32F_STENCIL8 ) {
+#if defined( CINDER_GL_ES_2 )
+			TextureBaseRef depthStencilTexture = Texture::create( mWidth, mHeight, format.mDepthTextureFormat );
+			mAttachmentsTexture[GL_DEPTH_ATTACHMENT] = depthStencilTexture;
+			mAttachmentsTexture[GL_STENCIL_ATTACHMENT] = depthStencilTexture;
+#else
 			mAttachmentsTexture[GL_DEPTH_STENCIL_ATTACHMENT] = Texture::create( mWidth, mHeight, format.mDepthTextureFormat );
+#endif
 		}
 		else {
 			mAttachmentsTexture[GL_DEPTH_ATTACHMENT] = Texture::create( mWidth, mHeight, format.mDepthTextureFormat );
