@@ -334,63 +334,74 @@ void Fbo::prepareAttachments( const Fbo::Format &format, bool multisampling )
 #if defined( CINDER_GL_ES_2 )
 	bool preexistingDepthAttachment		= mAttachmentsTexture.count( GL_DEPTH_ATTACHMENT ) || mAttachmentsBuffer.count( GL_DEPTH_ATTACHMENT );
 	bool layeredColorAttachment			= false;
-	bool hasCompatibleDepthAttachment	= true;
+	bool isDepthAttachmentCompatible	= true;
 #else
 	bool preexistingDepthAttachment		= mAttachmentsTexture.count( GL_DEPTH_ATTACHMENT ) || mAttachmentsBuffer.count( GL_DEPTH_ATTACHMENT )
 										|| mAttachmentsTexture.count( GL_DEPTH_STENCIL_ATTACHMENT ) || mAttachmentsBuffer.count( GL_DEPTH_STENCIL_ATTACHMENT );
-	// If the color attachment is layered all attachment need to be layered for the fbo to be complete. As layered RenderBuffers don't exist we force the use of a depth texture
 	bool layeredColorAttachment			= mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() == GL_TEXTURE_2D_ARRAY	|| mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() == GL_TEXTURE_2D_MULTISAMPLE_ARRAY;
-	bool hasCompatibleDepthAttachment	= mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() != GL_TEXTURE_3D;
-#endif
-	if( hasCompatibleDepthAttachment && ( format.mDepthTexture || layeredColorAttachment ) && ( ! preexistingDepthAttachment ) ) {
-		TextureBaseRef depthStencilTexture;
-#if defined( CINDER_GL_ES_2 )
-		depthStencilTexture = Texture2d::create( mWidth, mHeight, format.mDepthTextureFormat );
-#else
-		if( ! layeredColorAttachment ) {
-			depthStencilTexture = Texture2d::create( mWidth, mHeight, format.mDepthTextureFormat );
-		}
-		else {
-			auto depthStencilTextureFormat = Texture3d::Format( (TextureBase::Format) format.mDepthTextureFormat ).target( mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() );
-			depthStencilTexture = Texture3d::create( mWidth, mHeight, mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getDepth(), depthStencilTextureFormat );
-		}
+	bool isDepthAttachmentCompatible	= mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() != GL_TEXTURE_3D;
 #endif
 
-		if( format.mDepthTextureFormat.getInternalFormat() == GL_DEPTH_STENCIL ||
-			format.mDepthTextureFormat.getInternalFormat() == GL_DEPTH24_STENCIL8 ||
-			format.mDepthTextureFormat.getInternalFormat() == GL_DEPTH32F_STENCIL8 ) {
+
+	if( ! preexistingDepthAttachment && isDepthAttachmentCompatible ) {
+		// If the color attachment is layered all attachment need to be layered for the fbo to be complete. As layered RenderBuffers don't exist we force the use of a depth texture
+		if( format.mDepthTexture || ( ( format.mDepthBuffer || format.mDepthTexture ) && layeredColorAttachment ) ) { // depth texture or depth_stencil texture
+			if( format.mStencilBuffer ) {
+				GLint internalFormat;
+				GLenum pixelDataType;
+				Format::getDepthStencilFormats( format.mDepthBufferInternalFormat, &internalFormat, &pixelDataType );
 #if defined( CINDER_GL_ES_2 )
-			mAttachmentsTexture[GL_DEPTH_ATTACHMENT] = depthStencilTexture;
-			mAttachmentsTexture[GL_STENCIL_ATTACHMENT] = depthStencilTexture;
+				Texture2dRef depthStencilTexture = Texture2d::create( mWidth, mHeight, Texture2d::Format( format.mDepthTextureFormat ).internalFormat( internalFormat ).dataType( pixelDataType ) );
+				mAttachmentsTexture[GL_DEPTH_ATTACHMENT] = depthStencilTexture;
+				mAttachmentsTexture[GL_STENCIL_ATTACHMENT] = depthStencilTexture;
 #else
-			mAttachmentsTexture[GL_DEPTH_STENCIL_ATTACHMENT] = depthStencilTexture;
+				if( ! layeredColorAttachment ) {
+					mAttachmentsTexture[GL_DEPTH_STENCIL_ATTACHMENT] = Texture2d::create( mWidth, mHeight, Texture2d::Format( format.mDepthTextureFormat ).internalFormat( internalFormat ).dataType( pixelDataType ) );
+				}
+				else {
+					GLint depth		= mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getDepth();
+					GLenum target	= mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget();
+					mAttachmentsTexture[GL_DEPTH_STENCIL_ATTACHMENT] = Texture3d::create( mWidth, mHeight, depth, Texture3d::Format( format.mDepthTextureFormat ).internalFormat( internalFormat ).target( target ) );
+				}
 #endif
-		}
-		else {
-			mAttachmentsTexture[GL_DEPTH_ATTACHMENT] = depthStencilTexture;
-		}		
-	}
-	else if( hasCompatibleDepthAttachment && format.mDepthBuffer && ( ! preexistingDepthAttachment ) ) {
-		if( format.mStencilBuffer ) {
-			GLint internalFormat;
-			GLenum pixelDataType;
-			Format::getDepthStencilFormats( format.mDepthBufferInternalFormat, &internalFormat, &pixelDataType );
-			RenderbufferRef depthStencilBuffer = Renderbuffer::create( mWidth, mHeight, internalFormat );
+			}
+			else {
 #if defined( CINDER_GL_ES_2 )
-			mAttachmentsBuffer[GL_DEPTH_ATTACHMENT] = depthStencilBuffer;
-			mAttachmentsBuffer[GL_STENCIL_ATTACHMENT] = depthStencilBuffer;
+				mAttachmentsTexture[GL_DEPTH_ATTACHMENT] = Texture2d::create( mWidth, mHeight, format.mDepthTextureFormat );
 #else
-			mAttachmentsBuffer[GL_DEPTH_STENCIL_ATTACHMENT] = depthStencilBuffer;
+				if( ! layeredColorAttachment ) {
+					mAttachmentsTexture[GL_DEPTH_ATTACHMENT] = Texture2d::create( mWidth, mHeight, format.mDepthTextureFormat );
+				}
+				else {
+					GLint depth = mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getDepth();
+					GLenum target	= mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget();
+					mAttachmentsTexture[GL_DEPTH_ATTACHMENT] = Texture3d::create( mWidth, mHeight, depth, Texture3d::Format( format.mDepthTextureFormat ).target( target ) );
+				}
 #endif
+			}
 		}
-		else {
-			mAttachmentsBuffer[GL_DEPTH_ATTACHMENT] = Renderbuffer::create( mWidth, mHeight, format.mDepthBufferInternalFormat );
+		else if( format.mDepthBuffer ) { // depth buffer or depth_stencil buffer	
+			if( format.mStencilBuffer ) {
+				GLint internalFormat;
+				GLenum pixelDataType;
+				Format::getDepthStencilFormats( format.mDepthBufferInternalFormat, &internalFormat, &pixelDataType );
+				RenderbufferRef depthStencilBuffer = Renderbuffer::create( mWidth, mHeight, internalFormat );
+	#if defined( CINDER_GL_ES_2 )
+				mAttachmentsBuffer[GL_DEPTH_ATTACHMENT] = depthStencilBuffer;
+				mAttachmentsBuffer[GL_STENCIL_ATTACHMENT] = depthStencilBuffer;
+	#else
+				mAttachmentsBuffer[GL_DEPTH_STENCIL_ATTACHMENT] = depthStencilBuffer;
+	#endif
+			}
+			else {
+				mAttachmentsBuffer[GL_DEPTH_ATTACHMENT] = Renderbuffer::create( mWidth, mHeight, format.mDepthBufferInternalFormat );
+			}
 		}
-	}
-	else if( hasCompatibleDepthAttachment && format.mStencilBuffer ) { // stencil only
-		GLint internalFormat = GL_STENCIL_INDEX8;
-		RenderbufferRef stencilBuffer = Renderbuffer::create( mWidth, mHeight, internalFormat );
-		mAttachmentsBuffer[GL_STENCIL_ATTACHMENT] = stencilBuffer;
+		else if( format.mStencilBuffer ) { // stencil only
+			GLint internalFormat = GL_STENCIL_INDEX8;
+			RenderbufferRef stencilBuffer = Renderbuffer::create( mWidth, mHeight, internalFormat );
+			mAttachmentsBuffer[GL_STENCIL_ATTACHMENT] = stencilBuffer;
+		}
 	}
 }
 
