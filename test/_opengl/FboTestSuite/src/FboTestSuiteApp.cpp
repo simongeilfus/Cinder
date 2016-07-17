@@ -34,6 +34,7 @@ TEST_CASE( "2. Default Color Texture / Default Depth Buffer" ) {
 	REQUIRE( gl::getError() == GL_NO_ERROR );
 	REQUIRE( gl::Fbo::checkStatus() );
 	REQUIRE( fbo->getColorTexture() );
+	REQUIRE( ! fbo->getDepthTexture() );
 	REQUIRE( fbo->hasDepthAttachment() );
 	REQUIRE( ! fbo->hasStencilAttachment() );
 }
@@ -184,8 +185,7 @@ TEST_CASE( "13. Custom Color Texture 2D / Default Depth Texture / No stencil" ) 
 //____________________________________________________________________________________________________________
 TEST_CASE( "14. 3D Fbo: Custom Color Texture 3D / Default Depth Buffer (Skip because Tex3D doesn't support Depth) / No stencil" ) { 
 	auto fbo = gl::Fbo::create( 256, 256, gl::Fbo::Format()
-								.attachment( GL_COLOR_ATTACHMENT0, gl::Texture3d::create( 256, 256, 256 ) )
-								.disableDepth() );
+								.attachment( GL_COLOR_ATTACHMENT0, gl::Texture3d::create( 256, 256, 256 ) ) );
 				
 	REQUIRE( gl::getError() == GL_NO_ERROR );
 	REQUIRE( gl::Fbo::checkStatus() );
@@ -286,6 +286,8 @@ TEST_CASE( "20. Stencil Fbo: Custom Color Texture / No Depth / Default stencil B
 }
 	
 //____________________________________________________________________________________________________________
+// I don't see a point of a texture stencil attachment but specs say that it is allowed 
+// https://www.opengl.org/sdk/docs/man/docbook4/xhtml/glFramebufferTexture.xml
 TEST_CASE( "21. Stencil 3d Fbo: Custom 3d Texture / No Depth / Default stencil Buffer" ) { 
 	auto fbo = gl::Fbo::create( 256, 256, gl::Fbo::Format().stencilBuffer().disableDepth()
 								.attachment( GL_COLOR_ATTACHMENT0, gl::Texture3d::create( 256, 256, 64 ) ) );
@@ -300,6 +302,8 @@ TEST_CASE( "21. Stencil 3d Fbo: Custom 3d Texture / No Depth / Default stencil B
 }
 	
 //____________________________________________________________________________________________________________
+// I don't see a point of a texture stencil attachment but specs say that it is allowed 
+// https://www.opengl.org/sdk/docs/man/docbook4/xhtml/glFramebufferTexture.xml
 TEST_CASE( "22. Stencil Layered Fbo: Custom 2d Texture Array / No Depth / Default stencil Buffer" ) { 
 	auto fbo = gl::Fbo::create( 256, 256, gl::Fbo::Format().stencilBuffer().disableDepth()
 								.attachment( GL_COLOR_ATTACHMENT0, gl::Texture3d::create( 256, 256, 64, gl::Texture3d::Format().target( GL_TEXTURE_2D_ARRAY ) ) ) );
@@ -311,6 +315,146 @@ TEST_CASE( "22. Stencil Layered Fbo: Custom 2d Texture Array / No Depth / Defaul
 	REQUIRE( ! fbo->hasDepthAttachment() );
 	REQUIRE( fbo->hasStencilAttachment() );
 	REQUIRE( dynamic_pointer_cast<gl::Texture3d>( fbo->getTextureBase( GL_STENCIL_ATTACHMENT ) ) );
+}
+
+// Multisampling
+//____________________________________________________________________________________________________________
+
+//____________________________________________________________________________________________________________
+TEST_CASE( "23. Multisampling: Default Color Texture / No Depth" ) {
+	auto fbo = gl::Fbo::create( 512, 512, gl::Fbo::Format().colorTexture().disableDepth().samples( 4 ) );
+	fbo->markAsDirty();
+	fbo->resolveTextures();
+
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( fbo->getColorTexture() );
+	REQUIRE( ! fbo->hasDepthAttachment() );
+	REQUIRE( ! fbo->hasStencilAttachment() );
+	REQUIRE( fbo->getMultisampleId() );
+}
+
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "24. Multisampling: Default Color Texture / Default Depth Buffer" ) {
+	auto fbo = gl::Fbo::create( 512, 512, gl::Fbo::Format().colorTexture().depthBuffer().samples( 4 ) );
+	fbo->markAsDirty();
+	fbo->resolveTextures();
+		
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( fbo->getColorTexture() );
+	REQUIRE( ! fbo->getDepthTexture() );
+	REQUIRE( fbo->hasDepthAttachment() );
+	REQUIRE( ! fbo->hasStencilAttachment() );
+	REQUIRE( fbo->getMultisampleId() );
+}
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "25. Multisampling: Default Color Texture / Default Depth Texture" ) { 
+	auto fbo = gl::Fbo::create( 512, 512, gl::Fbo::Format().colorTexture().depthTexture().samples( 4 ) );
+	fbo->markAsDirty();
+	fbo->resolveTextures();
+
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( fbo->getColorTexture() );
+	REQUIRE( fbo->getDepthTexture() );
+	REQUIRE( fbo->hasDepthAttachment() );
+	REQUIRE( ! fbo->hasStencilAttachment() );
+	REQUIRE( fbo->getMultisampleId() );
+}
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "26. Multisampling: Default Color Texture / Custom Depth Buffer" ) { 
+	auto fbo = gl::Fbo::create( 512, 512, gl::Fbo::Format().colorTexture().depthBuffer( GL_DEPTH_COMPONENT24 ).samples( 4 ) );
+	fbo->markAsDirty();
+	fbo->resolveTextures();
+
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( fbo->getColorTexture() );
+	REQUIRE( fbo->hasDepthAttachment() );
+	REQUIRE( ! fbo->getDepthTexture() );
+	REQUIRE( ! fbo->hasStencilAttachment() );
+	REQUIRE( fbo->getMultisampleId() );
+}
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "27. Multisampling: Default Color Texture / Custom Depth Texture" ) { 
+	auto fbo = gl::Fbo::create( 512, 512, gl::Fbo::Format().colorTexture().depthTexture( gl::Texture2d::Format().internalFormat( GL_DEPTH_COMPONENT24 ) ).samples( 4 ) );
+	fbo->markAsDirty();
+	fbo->resolveTextures();
+
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( fbo->getColorTexture() );
+	REQUIRE( fbo->hasDepthAttachment() );
+	REQUIRE( fbo->getDepthTexture() );
+	REQUIRE( fbo->getDepthTexture()->getInternalFormat() == GL_DEPTH_COMPONENT24 );
+	REQUIRE( ! fbo->hasStencilAttachment() );
+	REQUIRE( fbo->getMultisampleId() );
+}
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "28. Multisampling: Default Color Texture / Default Depth Buffer / Default stencil" ) { 
+	auto fbo = gl::Fbo::create( 512, 512, gl::Fbo::Format().colorTexture().depthBuffer().stencilBuffer().samples( 4 ) );
+	fbo->markAsDirty();
+	fbo->resolveTextures();
+
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( fbo->getColorTexture() );
+	REQUIRE( fbo->hasDepthAttachment() );
+	REQUIRE( fbo->hasStencilAttachment() );
+	REQUIRE( fbo->getMultisampleId() );
+}
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "29. Multisampling: Default Color Texture / Custom Depth Buffer / Default stencil" ) { 
+	auto fbo = gl::Fbo::create( 512, 512, gl::Fbo::Format().colorTexture()
+								.depthBuffer( GL_DEPTH_COMPONENT24 ).stencilBuffer().samples( 4 ) );
+	fbo->markAsDirty();
+	fbo->resolveTextures();
+		
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( fbo->getColorTexture() );
+	REQUIRE( fbo->hasDepthAttachment() );
+	REQUIRE( fbo->hasStencilAttachment() );
+	REQUIRE( fbo->getMultisampleId() );
+}
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "30. Multisampling: Default Color Texture / Default Depth Texture / Default stencil" ) { 
+	auto fbo = gl::Fbo::create( 512, 512, gl::Fbo::Format().colorTexture().depthTexture().stencilBuffer().samples( 4 ) );
+	fbo->markAsDirty();
+	fbo->resolveTextures();
+
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( fbo->getColorTexture() );
+	REQUIRE( fbo->getDepthTexture() );
+	REQUIRE( fbo->hasDepthAttachment() );
+	REQUIRE( fbo->hasStencilAttachment() );
+	REQUIRE( fbo->getMultisampleId() );
+}
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "31. Multisampling: Custom Color Texture 2D / No Depth / No stencil" ) { 
+	auto fbo = gl::Fbo::create( 512, 512, gl::Fbo::Format()
+								.attachment( GL_COLOR_ATTACHMENT0, gl::Texture2d::create( 512, 512 ) )
+								.disableDepth().samples( 4 ) );
+	fbo->markAsDirty();
+	fbo->resolveTextures();
+		
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( fbo->getColorTexture() );
+	REQUIRE( ! fbo->getDepthTexture() );
+	REQUIRE( ! fbo->hasDepthAttachment() );
+	REQUIRE( ! fbo->hasStencilAttachment() );
+	REQUIRE( fbo->getMultisampleId() );
 }
 
 class FboTestSuite : public App {
