@@ -417,6 +417,12 @@ void Fbo::prepareAttachments( const Fbo::Format &format, bool multisampling )
 #endif
 		}
 	}
+	else if( ! isDepthAttachmentCompatible && format.mDepthTexture ) {
+		CI_LOG_W( "Depth Texture not compatible with Texture3d. Use Texture2d Array instead." );
+	}
+	else if( ! isDepthAttachmentCompatible && format.mStencilBuffer ) {
+		CI_LOG_W( "Stencil Buffer only not compatible with Texture3d. Use a DEPTH_STENCIL format instead." );
+	}
 }
 
 void Fbo::attachAttachments()
