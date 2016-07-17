@@ -338,7 +338,11 @@ void Fbo::prepareAttachments( const Fbo::Format &format, bool multisampling )
 #else
 	bool preexistingDepthAttachment		= mAttachmentsTexture.count( GL_DEPTH_ATTACHMENT ) || mAttachmentsBuffer.count( GL_DEPTH_ATTACHMENT )
 										|| mAttachmentsTexture.count( GL_DEPTH_STENCIL_ATTACHMENT ) || mAttachmentsBuffer.count( GL_DEPTH_STENCIL_ATTACHMENT );
-	bool layeredColorAttachment			= mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() == GL_TEXTURE_2D_ARRAY	|| mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() == GL_TEXTURE_2D_MULTISAMPLE_ARRAY;
+	bool layeredColorAttachment			= 
+#if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE )
+		mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() == GL_TEXTURE_2D_MULTISAMPLE_ARRAY ||
+#endif
+		mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() == GL_TEXTURE_2D_ARRAY;
 	bool isDepthAttachmentCompatible	= mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() != GL_TEXTURE_3D;
 #endif
 

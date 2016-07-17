@@ -966,7 +966,7 @@ void framebufferTexture( const TextureBaseRef &texture, GLenum attachment, GLint
 #else
 	GLenum texTarget = texture->getTarget();
 	if( ! ( texTarget == GL_TEXTURE_2D || 
-#if ! defined( CINDER_GL_ES_2 )
+#if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE )
 		texTarget == GL_TEXTURE_2D_MULTISAMPLE ||
 #endif
 		texTarget == GL_TEXTURE_CUBE_MAP_POSITIVE_X ||
@@ -1038,7 +1038,7 @@ GLint getMaxSamples()
 }
 GLint getMaxColorTextureSamples()
 {
-#if ! defined( CINDER_GL_ES_2 )
+#if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE )
 	static GLint sMaxSamples = -1;
 	if( sMaxSamples < 0 ) {
 		glGetIntegerv( GL_MAX_COLOR_TEXTURE_SAMPLES, &sMaxSamples);
@@ -1050,7 +1050,7 @@ GLint getMaxColorTextureSamples()
 }
 GLint getMaxDepthTextureSamples()
 {
-#if ! defined( CINDER_GL_ES_2 )
+#if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE )
 	static GLint sMaxSamples = -1;
 	if( sMaxSamples < 0 ) {
 		glGetIntegerv( GL_MAX_DEPTH_TEXTURE_SAMPLES, &sMaxSamples);
