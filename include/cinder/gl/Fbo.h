@@ -105,8 +105,8 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
 	//! Creates an FBO \a width pixels wide and \a height pixels high, a color texture (with optional \a alpha channel), and optionally a \a depth buffer and \a stencil buffer
 	static FboRef create( int width, int height, bool alpha, bool depth = true, bool stencil = false );
 	~Fbo();
-	//! Creates an empty FBO
-	static FboRef createEmpty();
+	//! Creates an FBO using Fbo::Format \a format. The FBO can have zero attachments
+	static FboRef create( const Format &format = Format() );
 
 	//! Returns the width of the FBO in pixels
 	int				getWidth() const { return mWidth; }
@@ -289,7 +289,7 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
 	};
 
  protected:
-	Fbo();
+	Fbo( const Format &format );
 	Fbo( int width, int height, const Format &format );
  
 	void		init();
@@ -298,6 +298,7 @@ class Fbo : public std::enable_shared_from_this<Fbo> {
 	void		attachAttachments();
 	void		initMultisample( const Format &format );
 	void		updateMipmaps( GLenum attachment ) const;
+	ivec2		findEffectiveSize( const std::map<GLenum,RenderbufferRef> &buffers, const std::map<GLenum,TextureBaseRef> &textures ) const;
 	static bool	checkStatus( class FboExceptionInvalidSpecification *resultExc );
 	void		setDrawBuffers( GLuint fbId, const std::map<GLenum,RenderbufferRef> &attachmentsBuffer, const std::map<GLenum,TextureBaseRef> &attachmentsTexture );
 

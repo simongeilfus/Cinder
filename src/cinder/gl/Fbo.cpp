@@ -270,17 +270,28 @@ FboRef Fbo::create( int width, int height, bool alpha, bool depth, bool stencil 
 
 	return FboRef( new Fbo( width, height, format ) );
 }
-FboRef Fbo::createEmpty()
+FboRef Fbo::create( const Format &format )
 {
-	return FboRef( new Fbo() );
+	return FboRef( new Fbo( format ) );
 }
 
-Fbo::Fbo()
-	: mId( 0 ), mMultisampleFramebufferId( 0 )
+Fbo::Fbo( const Format &format )
+	: mId( 0 ), mMultisampleFramebufferId( 0 ), mFormat( format )
 {
-	// allocate the framebuffer itself
-	glGenFramebuffers( 1, &mId );
+	if( ! format.mDepthTexture && ! format.mStencilBuffer 
+		&& format.mAttachmentsBuffer.empty()
+		&& format.mAttachmentsMultisampleBuffer.empty() 
+		&& format.mAttachmentsTexture.empty() ) {
+		mFormat.mColorTexture = false;
+		mFormat.mDepthBuffer = false;
+	}
+	else {
+		ivec2 size = findEffectiveSize( format.mAttachmentsBuffer, format.mAttachmentsTexture );
+		mWidth = size.x;
+		mHeight = size.y;
+	}
 
+	init();
 	gl::context()->framebufferCreated( this );
 }
 Fbo::Fbo( int width, int height, const Format &format )
@@ -338,14 +349,13 @@ void Fbo::prepareAttachments( const Fbo::Format &format, bool multisampling )
 #else
 	bool preexistingDepthAttachment		= mAttachmentsTexture.count( GL_DEPTH_ATTACHMENT ) || mAttachmentsBuffer.count( GL_DEPTH_ATTACHMENT )
 										|| mAttachmentsTexture.count( GL_DEPTH_STENCIL_ATTACHMENT ) || mAttachmentsBuffer.count( GL_DEPTH_STENCIL_ATTACHMENT );
-	bool layeredColorAttachment			= 
+	bool layeredColorAttachment			= mAttachmentsTexture.count( GL_COLOR_ATTACHMENT0 ) && (
 #if defined( CINDER_GL_HAS_TEXTURE_MULTISAMPLE )
 		mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() == GL_TEXTURE_2D_MULTISAMPLE_ARRAY ||
 #endif
-		mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() == GL_TEXTURE_2D_ARRAY;
-	bool isDepthAttachmentCompatible	= mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() != GL_TEXTURE_3D;
+		mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() == GL_TEXTURE_2D_ARRAY );
+	bool isDepthAttachmentCompatible	= mAttachmentsTexture.empty() || ( mAttachmentsTexture.count( GL_COLOR_ATTACHMENT0 ) && mAttachmentsTexture[GL_COLOR_ATTACHMENT0]->getTarget() != GL_TEXTURE_3D );
 #endif
-
 
 	if( ! preexistingDepthAttachment && isDepthAttachmentCompatible ) {
 		// If the color attachment is layered all attachment need to be layered for the fbo to be complete. As layered RenderBuffers don't exist we force the use of a depth texture
@@ -473,10 +483,10 @@ void Fbo::setDrawBuffers( GLuint fbId, const map<GLenum,RenderbufferRef> &attach
 		std::sort( drawBuffers.begin(), drawBuffers.end() );
 		glDrawBuffers( (GLsizei)drawBuffers.size(), &drawBuffers[0] );
 	}
-	else {
+	/*else {
 		GLenum none = GL_NONE;
 		glDrawBuffers( 1, &none );
-	}
+	}*/
 #endif
 }
 
@@ -485,14 +495,14 @@ void Fbo::init()
 	// allocate the framebuffer itself
 	glGenFramebuffers( 1, &mId );
 	ScopedFramebuffer fbScp( GL_FRAMEBUFFER, mId );
-
+	
 	// determine multisampling settings
 	bool useMsaa, useCsaa;
 	initMultisamplingSettings( &useMsaa, &useCsaa, &mFormat );
 
 	prepareAttachments( mFormat, useMsaa || useCsaa );
 	attachAttachments();
-
+	
 	if( useCsaa || useMsaa )
 		initMultisample( mFormat );
 	
@@ -500,9 +510,11 @@ void Fbo::init()
 	if( mMultisampleFramebufferId ) // using multisampling and setup succeeded
 		setDrawBuffers( mMultisampleFramebufferId, mAttachmentsMultisampleBuffer, map<GLenum,TextureBaseRef>() );
 		
-	FboExceptionInvalidSpecification exc;
-	if( ! checkStatus( &exc ) ) // failed creation; throw
-		throw exc;
+	if( ! mAttachmentsBuffer.empty() && ! mAttachmentsTexture.empty() && ! mAttachmentsMultisampleBuffer.empty() ) {
+		FboExceptionInvalidSpecification exc;
+		if( ! checkStatus( &exc ) ) // failed creation; throw
+			throw exc;
+	}
 	
 	mNeedsResolve = false;
 	mNeedsMipmapUpdate = false;
@@ -709,8 +721,9 @@ void Fbo::attach( const RenderbufferRef &renderbuffer, GLenum attachment )
 	}
 	
 	// update fbo size
-	mWidth = renderbuffer->getWidth();
-	mHeight = renderbuffer->getHeight();
+	ivec2 size = findEffectiveSize( mAttachmentsBuffer, mAttachmentsTexture );
+	mWidth = size.x;
+	mHeight = size.y;
 }
 
 void Fbo::attach( const TextureBaseRef &texture, GLenum attachment, GLint level )
@@ -740,8 +753,9 @@ void Fbo::attach( const TextureBaseRef &texture, GLenum attachment, GLint level 
 	}
 	
 	// update fbo size
-	mWidth = texture->getWidth();
-	mHeight = texture->getHeight();
+	ivec2 size = findEffectiveSize( mAttachmentsBuffer, mAttachmentsTexture );
+	mWidth = size.x;
+	mHeight = size.y;
 }
 
 void Fbo::updateMipmaps( GLenum attachment ) const
@@ -757,6 +771,31 @@ void Fbo::updateMipmaps( GLenum attachment ) const
 	}
 
 	mNeedsMipmapUpdate = false;
+}
+
+// The effective size of the FBO is the intersection of all of the sizes of the bound images (ie: the smallest in each dimension). 
+ivec2 Fbo::findEffectiveSize( const std::map<GLenum,RenderbufferRef> &buffers, const std::map<GLenum,TextureBaseRef> &textures ) const
+{
+	ivec2 minSize( 0, 0 );
+	for( const auto &buffer : buffers ) {
+		ivec2 bufferSize( buffer.second->getSize() );
+		if( minSize.x == 0 )
+			minSize.x = bufferSize.x;
+		if( minSize.y == 0 )
+			minSize.y = bufferSize.y;
+		minSize = glm::min( minSize, bufferSize );
+	}
+	
+	for( const auto &texture : textures ) {
+		ivec2 textureSize( texture.second->getWidth(), texture.second->getHeight() );
+		if( minSize.x == 0 )
+			minSize.x = textureSize.x;
+		if( minSize.y == 0 )
+			minSize.y = textureSize.y;
+		minSize = glm::min( minSize, textureSize );
+	}
+
+	return minSize;
 }
 
 void Fbo::markAsDirty()
