@@ -83,6 +83,12 @@ Context::Context( const std::shared_ptr<PlatformData> &platformData )
 	mFramebufferStack.push_back( 0 );
 #endif
 	mDefaultArrayVboIdx = 0;
+	
+	
+#if ! defined( CINDER_GL_ES_2 )
+	// initial state for the drawbuffers stack
+	mDrawBufferStack.push_back( vector<GLenum>{ GL_COLOR_ATTACHMENT0 } );
+#endif
 
 	// initial state for depth mask is enabled
 	mBoolStateStack[GL_DEPTH_WRITEMASK] = vector<GLboolean>();

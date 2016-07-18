@@ -208,7 +208,7 @@ class Context {
 	//! No-op if Renderbuffer wasn't bound, otherwise reflects the binding as 0 (in accordance with what GL has done automatically).
 	void		renderbufferDeleted( const Renderbuffer *buffer );
 	
-	#if ! defined( CINDER_GL_ES_2 )
+#if ! defined( CINDER_GL_ES_2 )
 	//! Analogous to glDrawBuffers().
 	void				drawBuffers( GLsizei num, const GLenum *bufs );
 	//! Analogous to glDrawBuffer(), and emulated on ES 3
@@ -221,7 +221,7 @@ class Context {
 	void				popDrawBuffers( bool forceRestore = false );
 	//! Returns the current draw buffers
 	std::vector<GLenum> getDrawBuffers();
-	#endif
+#endif
 
 	//! Binds GLSL program \a prog. Analogous to glUseProgram()
 	void				bindGlslProg( const GlslProg* prog );
