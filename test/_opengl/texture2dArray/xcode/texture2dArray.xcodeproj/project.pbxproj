@@ -18,10 +18,10 @@
 		00B9955B1B128DF400A5C623 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B995591B128DF400A5C623 /* IOSurface.framework */; };
 		5323E6B20EAFCA74003A9687 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5323E6B10EAFCA74003A9687 /* CoreVideo.framework */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		E0B6908780D44FC8B1B96510 /* texture2dArray_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = F37516BC71924A4F8A863714 /* texture2dArray_Prefix.pch */; };
-		685F579FF9A64A8BB49B6477 /* CinderApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2C86D56BFC1740D189A32196 /* CinderApp.icns */; };
-		D5DB73E99E1148F4842E8D70 /* Resources.h in Headers */ = {isa = PBXBuildFile; fileRef = 7B453A3F423F443F96BC3DBD /* Resources.h */; };
-		F55549ADE7664AE6B960CFEA /* texture2dArrayApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0AD79C85171F4C1180197AAC /* texture2dArrayApp.cpp */; };
+		BE827245C55E4D4CAF648050 /* Texture2dArray_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = DF9AA15924A64E828CA7BC77 /* Texture2dArray_Prefix.pch */; };
+		B600D73C8265425B8AF4DC3C /* CinderApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 105552D9EF7E4ED7B4ADE901 /* CinderApp.icns */; };
+		981154D5C1DB4E2D91DC4033 /* Resources.h in Headers */ = {isa = PBXBuildFile; fileRef = 0931DBC8EED345669F156853 /* Resources.h */; };
+		C74A624073064750988E646E /* Texture2dArrayApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 566E9B75461E4DF28A29C2ED /* Texture2dArrayApp.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,12 +38,12 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		5323E6B10EAFCA74003A9687 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
-		8D1107320486CEB800E47090 /* texture2dArray.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = texture2dArray.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		0AD79C85171F4C1180197AAC /* texture2dArrayApp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; path = ../src/texture2dArrayApp.cpp; sourceTree = "<group>"; name = texture2dArrayApp.cpp; };
-		7B453A3F423F443F96BC3DBD /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ../include/Resources.h; sourceTree = "<group>"; name = Resources.h; };
-		2C86D56BFC1740D189A32196 /* CinderApp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ../resources/CinderApp.icns; sourceTree = "<group>"; name = CinderApp.icns; };
-		4542D98B8D0046DAAE6923E6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; name = Info.plist; };
-		F37516BC71924A4F8A863714 /* texture2dArray_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = texture2dArray_Prefix.pch; sourceTree = "<group>"; name = texture2dArray_Prefix.pch; };
+		8D1107320486CEB800E47090 /* Texture2dArray.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Texture2dArray.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		566E9B75461E4DF28A29C2ED /* Texture2dArrayApp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; path = ../src/Texture2dArrayApp.cpp; sourceTree = "<group>"; name = Texture2dArrayApp.cpp; };
+		0931DBC8EED345669F156853 /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ../include/Resources.h; sourceTree = "<group>"; name = Resources.h; };
+		105552D9EF7E4ED7B4ADE901 /* CinderApp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ../resources/CinderApp.icns; sourceTree = "<group>"; name = CinderApp.icns; };
+		9A47F71795FE4DC38289DEC4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; name = Info.plist; };
+		DF9AA15924A64E828CA7BC77 /* Texture2dArray_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = Texture2dArray_Prefix.pch; sourceTree = "<group>"; name = Texture2dArray_Prefix.pch; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,7 +71,7 @@
 		080E96DDFE201D6D7F000001 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				0AD79C85171F4C1180197AAC /* texture2dArrayApp.cpp */,
+				566E9B75461E4DF28A29C2ED /* Texture2dArrayApp.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -106,12 +106,12 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8D1107320486CEB800E47090 /* texture2dArray.app */,
+				8D1107320486CEB800E47090 /* Texture2dArray.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		29B97314FDCFA39411CA2CEA /* texture2dArray */ = {
+		29B97314FDCFA39411CA2CEA /* Texture2dArray */ = {
 			isa = PBXGroup;
 			children = (
 				01B97315FEAEA392516A2CEA /* Blocks */,
@@ -121,7 +121,7 @@
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
-			name = texture2dArray;
+			name = Texture2dArray;
 			sourceTree = "<group>";
 		};
 		01B97315FEAEA392516A2CEA /* Blocks */ = {
@@ -134,8 +134,8 @@
 		29B97315FDCFA39411CA2CEA /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				7B453A3F423F443F96BC3DBD /* Resources.h */,
-				F37516BC71924A4F8A863714 /* texture2dArray_Prefix.pch */,
+				0931DBC8EED345669F156853 /* Resources.h */,
+				DF9AA15924A64E828CA7BC77 /* Texture2dArray_Prefix.pch */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -143,8 +143,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				2C86D56BFC1740D189A32196 /* CinderApp.icns */,
-				4542D98B8D0046DAAE6923E6 /* Info.plist */,
+				105552D9EF7E4ED7B4ADE901 /* CinderApp.icns */,
+				9A47F71795FE4DC38289DEC4 /* Info.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -161,9 +161,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8D1107260486CEB800E47090 /* texture2dArray */ = {
+		8D1107260486CEB800E47090 /* Texture2dArray */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "texture2dArray" */;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Texture2dArray" */;
 			buildPhases = (
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
@@ -173,10 +173,10 @@
 			);
 			dependencies = (
 			);
-			name = texture2dArray;
+			name = Texture2dArray;
 			productInstallPath = "$(HOME)/Applications";
-			productName = texture2dArray;
-			productReference = 8D1107320486CEB800E47090 /* texture2dArray.app */;
+			productName = Texture2dArray;
+			productReference = 8D1107320486CEB800E47090 /* Texture2dArray.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -184,7 +184,7 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "texture2dArray" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Texture2dArray" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -194,11 +194,11 @@
 				French,
 				German,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA /* texture2dArray */;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* Texture2dArray */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8D1107260486CEB800E47090 /* texture2dArray */,
+				8D1107260486CEB800E47090 /* Texture2dArray */,
 			);
 		};
 /* End PBXProject section */
@@ -208,7 +208,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				685F579FF9A64A8BB49B6477 /* CinderApp.icns in Resources */,
+				B600D73C8265425B8AF4DC3C /* CinderApp.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,7 +219,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F55549ADE7664AE6B960CFEA /* texture2dArrayApp.cpp in Sources */,
+				C74A624073064750988E646E /* Texture2dArrayApp.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,13 +240,13 @@
 					"$(inherited)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = texture2dArray_Prefix.pch;
+				GCC_PREFIX_HEADER = Texture2dArray_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = "\"$(CINDER_PATH)/lib/libcinder_d.a\"";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = texture2dArray;
+				PRODUCT_NAME = Texture2dArray;
 				SYMROOT = ./build;
 				WRAPPER_EXTENSION = app;
 			};
@@ -267,13 +267,13 @@
 					"$(inherited)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = texture2dArray_Prefix.pch;
+				GCC_PREFIX_HEADER = Texture2dArray_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = "\"$(CINDER_PATH)/lib/libcinder.a\"";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = texture2dArray;
+				PRODUCT_NAME = Texture2dArray;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SYMROOT = ./build;
 				WRAPPER_EXTENSION = app;
@@ -317,7 +317,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "texture2dArray" */ = {
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Texture2dArray" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4B08A954540054247B /* Debug */,
@@ -326,7 +326,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "texture2dArray" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Texture2dArray" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,

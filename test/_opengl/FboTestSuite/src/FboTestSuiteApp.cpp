@@ -1,6 +1,41 @@
+/*
+// gl::Fbo needs those to pass the tests:
+
+static bool checkStatus()
+{
+	FboExceptionInvalidSpecification exc;
+	bool status = checkStatus( &exc );
+	if( ! status ) // failed creation; throw
+		throw exc;
+	return status;
+}
+
+bool hasDepthAttachment() const 
+{ 
+	return 
+#if ! defined( CINDER_GL_ES_2 )
+		mAttachmentsBuffer.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsBuffer.end() 
+		|| mAttachmentsTexture.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsTexture.end() ||
+#endif
+		mAttachmentsBuffer.find( GL_DEPTH_ATTACHMENT ) != mAttachmentsBuffer.end() 
+		|| mAttachmentsTexture.find( GL_DEPTH_ATTACHMENT ) != mAttachmentsTexture.end(); 
+}
+bool hasStencilAttachment() const 
+{ 
+	return 
+#if ! defined( CINDER_GL_ES_2 )
+		mAttachmentsBuffer.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsBuffer.end()
+		|| mAttachmentsTexture.find( GL_DEPTH_STENCIL_ATTACHMENT ) != mAttachmentsTexture.end() ||
+#endif
+		mAttachmentsBuffer.find( GL_STENCIL_ATTACHMENT ) != mAttachmentsBuffer.end()  
+		|| mAttachmentsTexture.find( GL_STENCIL_ATTACHMENT ) != mAttachmentsTexture.end();
+}
+*/
+
 #include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
+#include "cinder/Log.h"
 
 #define CATCH_CONFIG_NOSTDOUT
 namespace Catch {
@@ -456,6 +491,45 @@ TEST_CASE( "31. Multisampling: Custom Color Texture 2D / No Depth / No stencil" 
 	REQUIRE( ! fbo->hasStencilAttachment() );
 	REQUIRE( fbo->getMultisampleId() );
 }
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "32. Multisampling: 3D Fbo: Custom Color Texture 3D / No Depth / No stencil" ) { 
+	auto fbo = gl::Fbo::create( 256, 256, gl::Fbo::Format()
+								.attachment( GL_COLOR_ATTACHMENT0, gl::Texture3d::create( 256, 256, 256 ) )
+								.disableDepth().samples( 4 ) );
+	fbo->markAsDirty();
+	fbo->resolveTextures();
+				
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( dynamic_pointer_cast<gl::Texture3d>( fbo->getTextureBase( GL_COLOR_ATTACHMENT0 ) ) );
+	REQUIRE( ! fbo->getColorTexture() );
+	REQUIRE( ! fbo->getDepthTexture() );
+	REQUIRE( ! fbo->hasDepthAttachment() );
+	REQUIRE( ! fbo->hasStencilAttachment() );
+	REQUIRE( fbo->getMultisampleId() );
+	//REQUIRE( false );
+}
+	
+//____________________________________________________________________________________________________________
+TEST_CASE( "33. Multisampling: Layered Fbo: Custom Color Texture 2D Array / No Depth / No stencil" ) { 
+	auto fbo = gl::Fbo::create( 256, 256, gl::Fbo::Format()
+								.attachment( GL_COLOR_ATTACHMENT0, gl::Texture3d::create( 256, 256, 16, gl::Texture3d::Format().target( GL_TEXTURE_2D_ARRAY ) ) )
+								.disableDepth().samples( 4 ) );
+	gl::ScopedFramebuffer scopedFbo( fbo );
+	fbo->markAsDirty();
+	fbo->resolveTextures();
+		
+	REQUIRE( gl::getError() == GL_NO_ERROR );
+	REQUIRE( gl::Fbo::checkStatus() );
+	REQUIRE( dynamic_pointer_cast<gl::Texture3d>( fbo->getTextureBase( GL_COLOR_ATTACHMENT0 ) ) );
+	REQUIRE( ! fbo->getColorTexture() );
+	REQUIRE( ! fbo->getDepthTexture() );
+	REQUIRE( ! fbo->hasDepthAttachment() );
+	REQUIRE( ! fbo->hasStencilAttachment() );
+	REQUIRE( fbo->getMultisampleId() );
+	//REQUIRE( false );
+}
 
 class FboTestSuite : public App {
 public:
@@ -468,7 +542,10 @@ public:
 	}
 };
 
-CINDER_APP( FboTestSuite, RendererGl( RendererGl::Options().debugBreak( GL_DEBUG_SEVERITY_LOW ).debugLog( GL_DEBUG_SEVERITY_LOW ) ), []( App::Settings *settings ) {
+CINDER_APP( FboTestSuite, RendererGl( RendererGl::Options()
+							.debugBreak( GL_DEBUG_SEVERITY_LOW )
+							.debugLog( GL_DEBUG_SEVERITY_LOW ) ), 
+[]( App::Settings *settings ) {
 	settings->setConsoleWindowEnabled();
 	settings->setWindowSize( ivec2( 0, 0 ) );
 } )

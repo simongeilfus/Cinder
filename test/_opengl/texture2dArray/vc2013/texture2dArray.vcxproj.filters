@@ -14,10 +14,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\texture2dArrayApp.cpp">
+    <ClCompile Include="..\src\Texture2dArrayApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\texture2dArrayApp.cpp">
+    <ClCompile Include="..\src\Texture2dArrayApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClInclude Include="..\include\Resources.h">

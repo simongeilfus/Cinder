@@ -1,0 +1,32 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Texture2dArray", "Texture2dArray.vcxproj", "{BD2ED19D-D40A-4937-8315-BF20EF79D7B1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+		Debug_ANGLE|Win32 = Debug_ANGLE|Win32
+		Release_ANGLE|Win32 = Release_ANGLE|Win32
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD2ED19D-D40A-4937-8315-BF20EF79D7B1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BD2ED19D-D40A-4937-8315-BF20EF79D7B1}.Debug|Win32.Build.0 = Debug|Win32
+		{BD2ED19D-D40A-4937-8315-BF20EF79D7B1}.Release|Win32.ActiveCfg = Release|Win32
+		{BD2ED19D-D40A-4937-8315-BF20EF79D7B1}.Release|Win32.Build.0 = Release|Win32
+		{BD2ED19D-D40A-4937-8315-BF20EF79D7B1}.Debug_ANGLE|Win32.ActiveCfg = Debug_ANGLE|Win32
+		{BD2ED19D-D40A-4937-8315-BF20EF79D7B1}.Debug_ANGLE|Win32.Build.0 = Debug_ANGLE|Win32
+		{BD2ED19D-D40A-4937-8315-BF20EF79D7B1}.Release_ANGLE|Win32.ActiveCfg = Release_ANGLE|Win32
+		{BD2ED19D-D40A-4937-8315-BF20EF79D7B1}.Release_ANGLE|Win32.Build.0 = Release_ANGLE|Win32
+		{BD2ED19D-D40A-4937-8315-BF20EF79D7B1}.Debug|x64.ActiveCfg = Debug|x64
+		{BD2ED19D-D40A-4937-8315-BF20EF79D7B1}.Debug|x64.Build.0 = Debug|x64
+		{BD2ED19D-D40A-4937-8315-BF20EF79D7B1}.Release|x64.ActiveCfg = Release|x64
+		{BD2ED19D-D40A-4937-8315-BF20EF79D7B1}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
