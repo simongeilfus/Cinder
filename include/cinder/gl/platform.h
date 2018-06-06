@@ -115,7 +115,10 @@
 		#pragma clang diagnostic push
 		#pragma clang diagnostic ignored "-Wtypedef-redefinition"
 	#endif
-	#include "glload/gl_core.h"
+	#if defined( CINDER_MSW ) && ! defined( APIENTRY )
+		#define APIENTRY __stdcall
+	#endif
+	#include "glad/glad.h"
 	#if defined( __clang__ )
 		#pragma clang diagnostic pop
 	#endif
