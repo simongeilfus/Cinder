@@ -55,6 +55,8 @@ class EnvironmentCore : public Environment {
 	void	allocateTexStorage2d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable, GLint texImageDataType ) override;
 	void	allocateTexStorage3d( GLenum target, GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, bool immutable ) override;
 	void	allocateTexStorageCubeMap( GLsizei levels, GLenum internalFormat, GLsizei width, GLsizei height, bool immutable ) override;
+
+	void	allocateBufferStorage( GLenum target, GLsizeiptr size, const GLvoid * data, GLbitfield flags, bool immutable ) override;
 	
 	std::string		generateVertexShader( const ShaderDef &shader ) override;
 	std::string		generateFragmentShader( const ShaderDef &shader ) override;
@@ -196,6 +198,16 @@ void EnvironmentCore::allocateTexStorageCubeMap( GLsizei levels, GLenum internal
 		TextureBase::getInternalFormatInfo( internalFormat, &dataFormat, &dataType );
 		for( int face = 0; face < 6; ++face )
 			glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, 0, internalFormat, width, height, 0, dataFormat, dataType, nullptr );
+	}
+}
+
+void EnvironmentCore::allocateBufferStorage( GLenum target, GLsizeiptr size, const GLvoid * data, GLbitfield flags, bool immutable )
+{
+	static auto bufferStorageFn = glBufferStorage;
+	if( bufferStorageFn && immutable )
+		bufferStorageFn( target, size, data, flags );
+	else {
+		glBufferData( target, size, data, flags );
 	}
 }
 
