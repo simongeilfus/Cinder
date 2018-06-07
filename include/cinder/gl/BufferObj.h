@@ -36,7 +36,7 @@ class CI_API BufferObj {
   public:
 	~BufferObj();
 	
-	static BufferObjRef create( GLenum target, GLsizeiptr allocationSize, const void *data, GLenum usage );
+	static BufferObjRef create( GLenum target, GLsizeiptr allocationSize, const void *data, GLenum usage, bool immutable = false );
 	
 	//! Binds to the associated target.
 	void		bind() const;
@@ -44,6 +44,11 @@ class CI_API BufferObj {
 	void		bind( GLenum target ) const;
 	//! Unbinds from the associated target.
 	void		unbind() const;
+
+#if defined( CINDER_GL_HAS_BUFFER_STORAGE )
+	//! Analogous to glBufferStorage() where available, falls back to glBufferData() when glBufferStorage is not available
+	void		bufferStorage( GLsizeiptr size, const GLvoid *data, GLenum usage );
+#endif
 
 	//! Analogous to glBufferData()	
 	void		bufferData( GLsizeiptr size, const GLvoid *data, GLenum usage );
@@ -97,13 +102,14 @@ class CI_API BufferObj {
 	void				setLabel( const std::string &label );
 	
   protected:
-	BufferObj( GLenum target );
-	BufferObj( GLenum target, GLsizeiptr allocationSize, const void *data, GLenum usage );
+	BufferObj( GLenum target, bool immutable = false );
+	BufferObj( GLenum target, GLsizeiptr allocationSize, const void *data, GLenum usage, bool immutable = false );
 	
 	GLuint				mId;
 	GLsizeiptr			mSize;
 	GLenum				mTarget;
 	GLenum				mUsage;
+	bool				mImmutable;
 	std::string			mLabel; // debug label
 	
 	friend CI_API std::ostream& operator<<( std::ostream &os, const BufferObj &rhs );

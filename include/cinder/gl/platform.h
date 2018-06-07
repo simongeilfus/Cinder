@@ -115,10 +115,17 @@
 		#pragma clang diagnostic push
 		#pragma clang diagnostic ignored "-Wtypedef-redefinition"
 	#endif
+	// allows glad to not include windows.h
 	#if defined( CINDER_MSW ) && ! defined( APIENTRY )
+		#define UNDEF_APIENTRY
 		#define APIENTRY __stdcall
 	#endif
 	#include "glad/glad.h"
+	// clean up the unnecessary APIENTRY define
+	#if defined( UNDEF_APIENTRY )
+		#undef UNDEF_APIENTRY
+		#undef APIENTRY
+	#endif
 	#if defined( __clang__ )
 		#pragma clang diagnostic pop
 	#endif
@@ -213,6 +220,7 @@
 		#define CINDER_GL_HAS_COMPUTE_SHADER
 		#define CINDER_GL_HAS_DEBUG_OUTPUT
 		#define CINDER_GL_HAS_MULTI_DRAW_INDIRECT
+		#define CINDER_GL_HAS_BUFFER_STORAGE
 	#endif
 #endif
 

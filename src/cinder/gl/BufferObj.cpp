@@ -28,13 +28,13 @@
 
 namespace cinder { namespace gl {
 
-BufferObjRef BufferObj::create( GLenum target, GLsizeiptr allocationSize, const void *data, GLenum usage )
+BufferObjRef BufferObj::create( GLenum target, GLsizeiptr allocationSize, const void *data, GLenum usage, bool immutable )
 {
-	return BufferObjRef( new BufferObj( target, allocationSize, data, usage ) );
+	return BufferObjRef( new BufferObj( target, allocationSize, data, usage, immutable ) );
 }
 	
-BufferObj::BufferObj( GLenum target )
-	: mId( 0 ), mSize( 0 ), mTarget( target ),
+BufferObj::BufferObj( GLenum target, bool immutable )
+	: mId( 0 ), mSize( 0 ), mTarget( target ), mImmutable( immutable ),
 #if defined( CINDER_GL_ES )
   #if defined( CINDER_ANDROID ) || defined( CINDER_LINUX )
 	mUsage( GL_DYNAMIC_DRAW )
@@ -49,13 +49,17 @@ BufferObj::BufferObj( GLenum target )
 	gl::context()->bufferCreated( this );
 }
 
-BufferObj::BufferObj( GLenum target, GLsizeiptr allocationSize, const void *data, GLenum usage )
-	: mId( 0 ), mTarget( target ), mSize( allocationSize ), mUsage( usage )
+BufferObj::BufferObj( GLenum target, GLsizeiptr allocationSize, const void *data, GLenum usage, bool immutable )
+	: mId( 0 ), mTarget( target ), mSize( allocationSize ), mUsage( usage ), mImmutable( immutable )
 {
 	glGenBuffers( 1, &mId );
 	
 	ScopedBuffer bufferBind( mTarget, mId );
+#if defined( CINDER_GL_HAS_BUFFER_STORAGE )
+	env()->allocateBufferStorage( mTarget, mSize, data, usage, immutable );
+#else
 	glBufferData( mTarget, mSize, data, mUsage );
+#endif
 	gl::context()->bufferCreated( this );
 }
 
@@ -77,6 +81,13 @@ void BufferObj::bind( GLenum target ) const
 {
 	context()->bindBuffer( target, mId );
 }
+
+#if defined( CINDER_GL_HAS_BUFFER_STORAGE )
+void BufferObj::bufferStorage( GLsizeiptr size, const GLvoid *data, GLenum usage )
+{
+	env()->allocateBufferStorage( mTarget, size, data, usage, mImmutable );
+}
+#endif
 
 void BufferObj::bufferData( GLsizeiptr size, const GLvoid *data, GLenum usage )
 {
@@ -245,9 +256,10 @@ void BufferObj::setLabel( const std::string &label )
 std::ostream& operator<<( std::ostream &os, const BufferObj &rhs )
 {
 	os << "ID: " << rhs.mId << std::endl;
-	os << " Target: " << gl::constantToString( rhs.mTarget ) << "(" << rhs.mTarget << ")" << std::endl;
-	os << "   Size: " << rhs.mSize << std::endl;
-	os << "  Usage: " << gl::constantToString( rhs.mUsage ) << "(" << rhs.mUsage << ")" << std::endl;
+	os << "   Target: " << gl::constantToString( rhs.mTarget ) << "(" << rhs.mTarget << ")" << std::endl;
+	os << "     Size: " << rhs.mSize << std::endl;
+	os << "    Usage: " << gl::constantToString( rhs.mUsage ) << "(" << rhs.mUsage << ")" << std::endl;
+	os << "Immutable: " << std::boolalpha << rhs.mImmutable << std::endl;
 	if( ! rhs.mLabel.empty() )
 		os << "  Label: " << rhs.mLabel << std::endl;
 
