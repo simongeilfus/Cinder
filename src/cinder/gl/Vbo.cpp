@@ -24,23 +24,23 @@
 
 namespace cinder { namespace gl {
 	
-VboRef Vbo::create( GLenum target )
+VboRef Vbo::create( GLenum target, bool immutable )
 {
 	return VboRef( new Vbo( target ) );
 }
 
-VboRef Vbo::create( GLenum target, GLsizeiptr allocationSize, const void *data, GLenum usage )
+VboRef Vbo::create( GLenum target, GLsizeiptr allocationSize, const void *data, GLenum usage, bool immutable )
 {
-	return VboRef( new Vbo( target, allocationSize, data, usage ) );
+	return VboRef( new Vbo( target, allocationSize, data, usage, immutable ) );
 }
 	
-Vbo::Vbo( GLenum target )
-	: BufferObj( target )
+Vbo::Vbo( GLenum target, bool immutable )
+	: BufferObj( target, immutable  )
 {
 }
 
-Vbo::Vbo( GLenum target, GLsizeiptr allocationSize, const void *data, GLenum usage )
-	: BufferObj( target, allocationSize, data, usage )
+Vbo::Vbo( GLenum target, GLsizeiptr allocationSize, const void *data, GLenum usage, bool immutable )
+	: BufferObj( target, allocationSize, data, usage, immutable )
 {
 }
 

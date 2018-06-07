@@ -161,7 +161,7 @@ VertBatch::VertBatch( GLenum primType, bool useContextDefaultBuffers )
 	else {
 		mVaoStorage = gl::Vao::create();
 		mVao = mVaoStorage.get();
-		mVbo = gl::Vbo::create( GL_ARRAY_BUFFER, 0 );
+		mVbo = gl::Vbo::create( GL_ARRAY_BUFFER, (GLsizeiptr) 0 );
 		mOwnsBuffers = true;
 	}
 }

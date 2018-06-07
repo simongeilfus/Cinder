@@ -32,15 +32,15 @@ typedef std::shared_ptr<class Vbo> VboRef;
 
 class CI_API Vbo : public BufferObj {
   public:
-	static VboRef	create( GLenum target );
-	static VboRef	create( GLenum target, GLsizeiptr allocationSize, const void *data = nullptr, GLenum usage = GL_STATIC_DRAW );
+	static VboRef	create( GLenum target, bool immutable = false );
+	static VboRef	create( GLenum target, GLsizeiptr allocationSize, const void *data = nullptr, GLenum usage = GL_STATIC_DRAW, bool immutable = false );
 	template<typename T>
-	static VboRef	create( GLenum target, const std::vector<T> &v, GLenum usage = GL_STATIC_DRAW )
-		{ return create( target, v.size() * sizeof(T), v.data(), usage ); }
+	static VboRef	create( GLenum target, const std::vector<T> &v, GLenum usage = GL_STATIC_DRAW, bool immutable = false )
+		{ return create( target, v.size() * sizeof(T), v.data(), usage, immutable ); }
 	
   protected:
-	Vbo( GLenum target );
-	Vbo( GLenum target, GLsizeiptr allocationSize, const void *data, GLenum usage );
+	Vbo( GLenum target, bool immutable = false );
+	Vbo( GLenum target, GLsizeiptr allocationSize, const void *data, GLenum usage, bool immutable = false );
 };
 	
 } } // namespace cinder::gl

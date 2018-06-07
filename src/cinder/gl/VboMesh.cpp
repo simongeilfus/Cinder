@@ -165,7 +165,7 @@ void VboMeshGeomTarget::copyIndices( geom::Primitive /*primitive*/, const uint32
 		std::unique_ptr<uint16_t[]> indices( new uint16_t[numIndices] );
 		copyIndexData( source, numIndices, indices.get() );
 		if( ! mVboMesh->mIndices )
-			mVboMesh->mIndices = Vbo::create( GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(uint16_t), indices.get() );
+			mVboMesh->mIndices = Vbo::create( GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(uint16_t), indices.get(), true );
 		else
 			mVboMesh->mIndices->copyData( numIndices * sizeof(uint16_t), indices.get() );
 	}
@@ -174,7 +174,7 @@ void VboMeshGeomTarget::copyIndices( geom::Primitive /*primitive*/, const uint32
 		std::unique_ptr<uint32_t[]> indices( new uint32_t[numIndices] );
 		copyIndexData( source, numIndices, indices.get() );
 		if( ! mVboMesh->mIndices )
-			mVboMesh->mIndices = Vbo::create( GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(uint32_t), indices.get() );
+			mVboMesh->mIndices = Vbo::create( GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(uint32_t), indices.get(), true );
 		else
 			mVboMesh->mIndices->copyData( numIndices * sizeof(uint32_t), indices.get() );
 	}
@@ -249,7 +249,7 @@ void VboMesh::Layout::allocate( size_t numVertices, geom::BufferLayout *resultBu
 		if( *resultVbo ) // non-null shared_ptr means the VBO should be resized
 			(*resultVbo)->ensureMinimumSize( totalDataBytes );
 		else // else allocate
-			*resultVbo = Vbo::create( GL_ARRAY_BUFFER, totalDataBytes, nullptr, mUsage );
+			*resultVbo = Vbo::create( GL_ARRAY_BUFFER, totalDataBytes, nullptr, mUsage, true );
 	}
 }
 
@@ -392,7 +392,7 @@ void VboMesh::allocateIndexVbo()
 	else
 		throw geom::ExcIllegalIndexType();
 		
-	mIndices = gl::Vbo::create( GL_ELEMENT_ARRAY_BUFFER, mNumIndices * bytesRequired, nullptr, GL_STATIC_DRAW );
+	mIndices = gl::Vbo::create( GL_ELEMENT_ARRAY_BUFFER, mNumIndices * bytesRequired, nullptr, GL_STATIC_DRAW, true );
 }
 
 void VboMesh::buildVao( const GlslProgRef &shader, const AttribGlslMap &attributeMapping )

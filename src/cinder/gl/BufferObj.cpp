@@ -119,7 +119,11 @@ void BufferObj::copyData( GLsizeiptr size, const GLvoid *data )
 		glBufferSubData( mTarget, 0, size, data );
 	else { // need to reallocate due to inadequate size
 		mSize = size;
+#if defined( CINDER_GL_HAS_BUFFER_STORAGE )
+		env()->allocateBufferStorage( mTarget, mSize, data, mUsage, mImmutable );
+#else
 		glBufferData( mTarget, mSize, data, mUsage );
+#endif
 	}
 }
 
