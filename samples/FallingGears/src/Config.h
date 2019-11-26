@@ -25,6 +25,6 @@ class Config {
 
 	void loadGearData();
 
-	ci::JsonTree				mData;
+	ci::json::Json			mData;
 	std::vector<GearData>	mGears;
 };

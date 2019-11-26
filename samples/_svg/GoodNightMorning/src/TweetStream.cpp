@@ -6,14 +6,16 @@
 #include "cinder/ImageIo.h"
 #include "cinder/Surface.h"
 #include "cinder/Log.h"
+#include "cinder/Utilities.h"
 
 #include <boost/algorithm/string/replace.hpp>
 
 using namespace std;
 using namespace ci;
+using namespace ci::json;
 
 string replaceEscapes( const string &original );
-JsonTree queryTwitter( const std::string &query );
+Json queryTwitter( const std::string &query );
 
 
 TweetStream::TweetStream( const std::string &searchPhrase )
@@ -36,8 +38,8 @@ void TweetStream::serviceTweets()
 {
 	ThreadSetup threadSetup;
 	std::string nextQueryString = "?q=" + Url::encode( mSearchPhrase );
-	JsonTree searchResults;
-	JsonTree::ConstIter resultIt = searchResults.end();
+	Json searchResults;
+	Json::const_iterator resultIt = searchResults.end();
 
 	// This function loops until the app quits. Each iteration a pulls out the next result from the Twitter API query.
 	// When it reaches the last result of the current query it issues a new one, based on the "refresh_url" property
@@ -48,10 +50,10 @@ void TweetStream::serviceTweets()
 		if( resultIt == searchResults.end() ) { 		// are we at the end of the results of this JSON query?
 			// issue a new query
 			try {
-				JsonTree queryResult = queryTwitter( nextQueryString );
+				Json queryResult = queryTwitter( nextQueryString );
 				// the next query will be the "refresh_url" of this one.
-				nextQueryString = queryResult["refresh_url"].getValue();
-				searchResults = queryResult.getChild( "results" );
+				nextQueryString = queryResult["refresh_url"];
+				searchResults = queryResult["results"];
 				resultIt = searchResults.begin();
 			}
 			catch( ci::Exception &exc ) {
@@ -64,11 +66,11 @@ void TweetStream::serviceTweets()
 		if( resultIt != searchResults.end() ) {
 			try {
 				// get the URL and load the image for this profile
-				Url profileImgUrl = (*resultIt)["profile_image_url"].getValue<Url>();
+				Url profileImgUrl = (*resultIt)["profile_image_url"];
 				SurfaceRef userIcon = Surface::create( loadImage( loadUrl( profileImgUrl ) ) );
 				// pull out the text of the tweet and replace any XML-style escapes
-				string text = replaceEscapes( (*resultIt)["text"].getValue() );
-				string userName = (*resultIt)["from_user"].getValue();
+				string text = replaceEscapes( (*resultIt)["text"] );
+				string userName = (*resultIt)["from_user"];
 				mBuffer.pushFront( Tweet( text, userName, userIcon ) );
 			}
 			catch( ci::Exception &exc ) {
@@ -79,10 +81,10 @@ void TweetStream::serviceTweets()
 	}
 }
 
-JsonTree queryTwitter( const std::string &query )
+Json queryTwitter( const std::string &query )
 {
 	Url url( "http://search.twitter.com/search.json" + query + "&rpp=10&result_type=recent", true );
-	return JsonTree( loadUrl( url ) );
+	return loadJson( loadUrl( url ) );
 }
 
 // Replaces XML escaped characters with their equivalents

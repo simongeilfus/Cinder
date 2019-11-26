@@ -8,6 +8,7 @@
 
 using namespace std;
 using namespace ci;
+using namespace ci::json;
 
 #define LOG_EXCEPTION( exc )	{ CI_LOG_E( "exception caught: " << System::demangleTypeName( typeid( exc ).name() ) << ", what: " << exc.what() ); }
 
@@ -19,7 +20,7 @@ Config::Config()
 void Config::reload()
 {
 	try {
-		mData = JsonTree( app::loadAsset( "config.json" ) );
+		mData = loadJson( app::loadAsset( "config.json" ) );
 
 		loadGearData();
 
@@ -33,8 +34,8 @@ void Config::reload()
 float Config::getDecentSpeed() const
 {
 	float result = 100;
-	if( mData.hasChild( "decent-speed" ) )
-		result = mData.getValueForKey<float>( "decent-speed" );
+	if( mData.count( "decent-speed" ) )
+		result = mData["decent-speed"];
 
 	return result;
 }
@@ -44,7 +45,7 @@ ImageSourceRef Config::getBackgroundImage() const
 	ImageSourceRef result;
 
 	try {
-		string imageName = mData.getValueForKey( "background" );
+		string imageName = mData["background"];
 		result = loadImage( app::loadAsset( imageName ) );
 	}
 	catch( Exception &exc ) {
@@ -59,7 +60,7 @@ void Config::loadGearData()
 	mGears.clear();
 
 	for( const auto &gear : mData["gears"] ) {
-		string imageFilename = gear.getValue();
+		string imageFilename = gear;
 
 		auto tex = gl::Texture::create( loadImage( app::loadAsset( imageFilename ) ) );
 
