@@ -947,7 +947,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Shared|Win32'">
       </ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\src\jsoncpp\jsoncpp.cpp" />
     <ClCompile Include="..\..\src\libtess2\bucketalloc.c" />
     <ClCompile Include="..\..\src\libtess2\dict.c" />
     <ClCompile Include="..\..\src\libtess2\geom.c" />
@@ -1251,8 +1250,8 @@
     <ClInclude Include="..\..\include\freetype\tttables.h" />
     <ClInclude Include="..\..\include\freetype\tttags.h" />
     <ClInclude Include="..\..\include\freetype\ttunpat.h" />
-    <ClInclude Include="..\..\include\jsoncpp\json-forwards.h" />
-    <ClInclude Include="..\..\include\jsoncpp\json.h" />
+    <ClInclude Include="..\..\include\nlohmann\json.hpp" />
+    <ClInclude Include="..\..\include\nlohmann\json_fwd.hpp" />
     <ClInclude Include="..\..\include\rapidxml\rapidxml.hpp" />
     <ClInclude Include="..\..\include\rapidxml\rapidxml_print.hpp" />
     <ClInclude Include="..\..\include\tinyexr\tinyexr.h" />
