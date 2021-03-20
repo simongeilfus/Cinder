@@ -334,6 +334,7 @@ if( CINDER_IMGUI_ENABLED )
 		${CINDER_SRC_DIR}/imgui/imgui_impl_opengl3.cpp
 		${CINDER_SRC_DIR}/imgui/imgui_stdlib.cpp
 		${CINDER_SRC_DIR}/imgui/imgui_widgets.cpp
+		${CINDER_SRC_DIR}/imgui/imgui_tables.cpp
 	)
 
 	list( APPEND CINDER_SRC_FILES
