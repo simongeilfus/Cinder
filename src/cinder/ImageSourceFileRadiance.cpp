@@ -76,9 +76,9 @@ void ImageSourceFileRadiance::loadStream( IStreamRef stream )
 
 	char str[200];
 	stream->readData( str, 10 );
-	if (memcmp(str, "#?RADIANCE", 10)) {
+	if( strncmp(str, "#?RADIANCE", 10) == 0 ) {
 		// check RBGE
-		if (memcmp(str, "#?RGBE", 6)) {
+		if( strncmp(str, "#?RGBE", 6) == 0 ) {
 			throw ImageSourceFileRadianceException("Invalid header");
 		}
 		else {
